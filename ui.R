@@ -67,7 +67,7 @@ progress::-moz-progress-bar {
              ####################################################################################
              ####### Data upload & analysis #####################################################
              ####################################################################################
-             tabPanel(HTML("<font face=verdana size=3 color=#009E73>Analysis</font>"),
+             tabPanel(HTML("<font face=verdana size=5 color=#009E73>Analysis</font>"),
                       br(), HTML("<font face=verdana size=5 color=#009E73><b>Upload and analyze ecotoxicity data</b></font>"), br(), br(), br(),
                       fixedRow(
                         ###### Select type of data                                
@@ -226,7 +226,7 @@ progress::-moz-progress-bar {
              ####################################################################################
              ####### Report   ###################################################################
              ####################################################################################
-             tabPanel(HTML("<font face=verdana size=3 color=#009E73>Download report </font>"),
+             tabPanel(HTML("<font face=verdana size=5 color=#009E73>Download report </font>"),
                       fixedRow(
                         column(8, 
                                br(), HTML("<font face=verdana size=5 color=#009E73><b>Download the analysis report</b></font>"),

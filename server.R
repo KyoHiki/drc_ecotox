@@ -1,8 +1,8 @@
 server <- function(input, output, session) {
-  
+ 
   
   ####################################################################################
-  ####### Data upload ################################################################
+  ####### Data upload & analysis #####################################################
   ####################################################################################
   
   intest_type <- reactive({input$test_type})
@@ -45,9 +45,10 @@ server <- function(input, output, session) {
       }
   })
   
-  ## Output : print and plot toxicity data
+  ## Output : print raw data
   output$rawdata <- DT::renderDataTable({filedata()})
   
+  ## model fitting
   fitmodel <- eventReactive(input$buttonRunStep1,{
     if(intest_type() == 'TG201') {
         if(inmodel_201() == 'll2') {
@@ -94,35 +95,39 @@ server <- function(input, output, session) {
   })
   
   
-  # output of model summary
+  # output of ECx estimate
   ECx <- eventReactive(input$buttonRunStep1,{
     if(intest_type() == 'TG201') {
-      drc_df <- data.frame(ED(fitmodel(), c(50),interval = "delta",display=FALSE))
-      colnames(drc_df) <- c('EC50', 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      XX <- input$ecx_TG201
+      drc_df <- data.frame(ED(fitmodel(), c(XX),interval = "delta",display=FALSE))
+      colnames(drc_df) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
       }
     else if(intest_type() == 'TG202') {
       fit <- fitmodel()
       fit1 <- fit$fit1
       fit2 <- fit$fit2
-      drc_df1 <- data.frame(ED(fit1, c(50),interval = "delta",display=FALSE)) 
-      drc_df2 <- data.frame(ED(fit2, c(50),interval = "delta",display=FALSE))
-      colnames(drc_df1) <- c('EC50', 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
-      colnames(drc_df2) <- c('EC50', 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      XX <- input$ecx_TG202
+      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE)) 
+      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE))
+      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
       drc_df <- rbind(drc_df1,drc_df2)
       rownames(drc_df) <- c('24 h','48 h')
       }
     else if(intest_type() == 'TG203') {
-      drc_df <- data.frame(ED(fitmodel(), c(50),interval = "delta",display=FALSE))
-      colnames(drc_df) <- c('EC50', 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      XX <- input$ecx_TG203
+      drc_df <- data.frame(ED(fitmodel(), c(XX),interval = "delta",display=FALSE))
+      colnames(drc_df) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
       }
     else if(intest_type() == 'TG235') {
       fit <- fitmodel()
       fit1 <- fit$fit1
       fit2 <- fit$fit2
-      drc_df1 <- data.frame(ED(fit1, c(50),interval = "delta",display=FALSE)) 
-      drc_df2 <- data.frame(ED(fit2, c(50),interval = "delta",display=FALSE))
-      colnames(drc_df1) <- c('EC50', 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
-      colnames(drc_df2) <- c('EC50', 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      XX <- input$ecx_TG235
+      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE)) 
+      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE))
+      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
       drc_df <- rbind(drc_df1,drc_df2)
       rownames(drc_df) <- c('24 h','48 h')
     }
@@ -178,7 +183,7 @@ server <- function(input, output, session) {
   
   
   ####################################################################################
-  ####### STEP 2: hypothesis tets ####################################################
+  #######  hypothesis testing ########################################################
   ####################################################################################
   
    inmethod_201 <- reactive({input$test_method_TG201})
@@ -186,39 +191,61 @@ server <- function(input, output, session) {
 #  inmethod_218 <- reactive({input$test_method_TG218})
    inmethod_235 <- reactive({input$test_method_TG235})
 
-    TestResult <- eventReactive(input$buttonRunStep2,{ 
+    TestResult <- eventReactive(input$buttonRunStep1,{
       if(intest_type() == 'TG201') {
         data=filedata()
         data$CONC <- as.factor(data$CONC)
         fit <- lm( H72 ~ CONC, data = data )
         Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
         Res
-      }
-      else if(intest_type() == 'TG203') {
+        } 
+      else if(intest_type() == "TG203") {
         data=filedata()
         data$CONC <- as.factor(data$CONC)
         fit <- glm( cbind(DEAD,TOTAL-DEAD) ~ CONC, data = data, weights=TOTAL, family=binomial(link="logit")  )
-        Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
+        Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="greater")) 
         Res
-        }
+        } 
       else if(intest_type() == 'TG235'){
-        data=filedata()
-        data$CONC <- as.factor(data$CONC)
-        if( inmethod_235() =="Dunnett"){
-          fit1 <- glm( cbind(IMMOBILIZED,TOTAL-IMMOBILIZED) ~ CONC, data = data %>% dplyr::filter(TIME=="24"),
+          data=filedata()
+          data$CONC <- as.factor(data$CONC)
+          if( inmethod_235() =="Dunnett"){
+            fit1 <- glm( cbind(IMMOBILIZED,TOTAL-IMMOBILIZED) ~ CONC, data = data %>% dplyr::filter(TIME=="24"),
                        weights=TOTAL, family=binomial(link="logit")  )
-          Res1 <- summary (glht (fit1, linfct=mcp (CONC="Dunnett"), alternative="less")) 
-          fit2 <- glm( cbind(IMMOBILIZED,TOTAL-IMMOBILIZED) ~ CONC, data = data %>% dplyr::filter(TIME=="48"),
+            Res1 <- summary (glht (fit1, linfct=mcp (CONC="Dunnett"), alternative="greater")) 
+            fit2 <- glm( cbind(IMMOBILIZED,TOTAL-IMMOBILIZED) ~ CONC, data = data %>% dplyr::filter(TIME=="48"),
                        weights=TOTAL, family=binomial(link="logit")  )
-          Res2 <- summary (glht (fit2, linfct=mcp (CONC="Dunnett"), alternative="less"))
-#         list(Res1,Res2)
-          fit1
+            Res2 <- summary (glht (fit2, linfct=mcp (CONC="Dunnett"), alternative="greater"))
+            list("24 h" = Res1,"48 h" = Res2)
+            } 
+          else if ( inmethod_235() =="Fisher"){
+            data=filedata() %>% group_by(CONC,TIME) %>%
+              summarize(TOTAL=sum(TOTAL),IMMOBILIZED=sum(IMMOBILIZED)) %>% ungroup
+            TOTAL_24 <- data %>% dplyr::filter(TIME=="24" & CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
+            TOTAL_48 <- data %>% dplyr::filter(TIME=="48" & CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
+            IM_24 <- data %>% dplyr::filter(TIME=="24" & CONC=="0") %>% dplyr::select(IMMOBILIZED) %>% as.numeric()
+            IM_48 <- data %>% dplyr::filter(TIME=="48" & CONC=="0") %>% dplyr::select(IMMOBILIZED) %>% as.numeric()
+            data_24 <- data %>% mutate(TOTAL_ctrl = TOTAL_24, IMMOBILIZED_ctrl =IM_24) %>%
+              dplyr::filter(CONC!="0" & TIME=="24")
+            data_48 <- data %>% mutate(TOTAL_ctrl = TOTAL_48, IMMOBILIZED_ctrl =IM_48) %>%
+              dplyr::filter(CONC!="0" & TIME=="48")
+            fisher <- function(a,b,c,d){
+              dt <- matrix(c(a,b,c,d),ncol=2)
+              c(pvalue = fisher.test(dt)$p.value) 
+            }
+            Res1 <- data_24 %>%
+              rowwise()%>%
+              mutate(pvalue = fisher(IMMOBILIZED,TOTAL-IMMOBILIZED, IMMOBILIZED_ctrl,TOTAL_ctrl-IMMOBILIZED_ctrl)) %>% ungroup() %>%
+              mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
+              mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))
+            Res2 <- data_48 %>%
+              rowwise()%>%
+              mutate(pvalue = fisher(IMMOBILIZED,TOTAL-IMMOBILIZED, IMMOBILIZED_ctrl,TOTAL_ctrl-IMMOBILIZED_ctrl)) %>% ungroup() %>%
+              mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
+              mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))    
+            list("24 h" = Res1,"48 h" = Res2)
+            }
           }
-        else if ( inmethod_235() =="Fisher"){
-          fit1 <- lm( IMMOBILIZED ~ CONC, data = data  )
-          fit1
-        }
-        }
       })
     
     output$test_result <- renderPrint({
@@ -232,7 +259,7 @@ server <- function(input, output, session) {
   ####### R CODE #####################################################################
   ####################################################################################
   
-  output$printRCode <- renderText({
+  output$printReport <- renderText({
     
     if(intest_type() == 'TG201') {
       req(input$datafile_TG201)
@@ -247,23 +274,28 @@ server <- function(input, output, session) {
     } 
     text <- c("library(drc)",
               "",
-              "# Step 1",
               paste0("o <- ", ifelse(input$test_type == 'TG201', 
-                                     paste0("TG201('", input$datafile_TG201$name, "', backgrounddose = ", input$bgdose_microarray, ", check = TRUE, norm.method = '", input$normMethod_microarray, "')"), 
+                                     paste0("TG201('", input$datafile_TG201$name), 
                                      ifelse(input$test_type == 'TG202', 
-                                            paste0("TG202('", input$datafile_TG202$name, "', backgrounddose = ", input$bgdose_rnaseq, ", check = TRUE, transfo.method = '", input$transfoMethod_rnaseq, "', round.counts = TRUE)"), 
+                                            paste0("TG202('", input$datafile_TG202$name), 
                                             ifelse(input$test_type == 'TG203', 
-                                                   paste0("TG203('", input$datafile_TG203$name, "', backgrounddose = ", input$bgdose_metabolomic, ", check = TRUE)")
-                                                   )))),
+                                                   paste0("TG203('", input$datafile_TG203$name),
+                                                   ifelse(input$test_type == 'TG218', 
+                                                          paste0("TG218('", input$datafile_TG218$name),
+                                                          ifelse(input$test_type == 'TG235',
+                                                                 paste0("TG235('", input$datafile_TG235$name)
+                                                                 )
+                                                          )
+                                                   )
+                                            )
+                                     )
+                     ),
               "print(o)",
               "plot(o)",
               "",
-              "# Step 2",
-              paste0("s <- itemselect(o, select.method = '", inSelectMethod(), "', FDR = ", inFDR(), ")"),
-              "print(s)",
               "",
     )
-    output$buttonDownRCode <- downloadHandler(
+    output$buttonDownloadReport <- downloadHandler(
       filename = function(){
         paste0("Rcode-", Sys.Date(), ".pdf")
       },
@@ -276,5 +308,4 @@ server <- function(input, output, session) {
   })
   
 }
-
 

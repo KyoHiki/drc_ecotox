@@ -6,8 +6,6 @@ library(multcomp)
 library(shinyjs)
 library(shinycssloaders)
 
-#############################################################################################################################################################################################################
-
 ui <- fluidPage(
   useShinyjs(),
   tags$head(
@@ -48,11 +46,12 @@ progress::-moz-progress-bar {
                       
                       fluidRow(
                         br(), br(), 
-                        HTML("<center><font face=verdana size=6 color=#009E73>Welcome to the Drc-Shiny application</font></center>"),
+                        HTML("<center><font face=verdana size=6 color=#009E73>Welcome to the drc-ecotox application</font></center>"),
                         br(), br(),
-                        fixedRow(column(10, offset = 1,
-                                        tags$blockquote("Drc-Shiny is a freely available tool for dose-response (or concentration-response) characterization from standardized ecotoxicity data.", br(), 
-                                                        "This application consists of three parts: upload toxicity data and select analysis methods (Part I), ", br(), 
+                        fixedRow(column(8, offset = 1,
+                                        tags$blockquote("'drc-ecotox' is a freely available tool for dose-response (or concentration-response) characterization from standardized ecotoxicity data.",
+                                                        br(), 
+                                                        "This application helps the users to make a plot of dose-response curve, estimate effect concentrations (ECx), and estimate no observed effect concentrations (NOEC).", br(), 
                                                          br(), br(),
                                                         style="text-align:justify;")
                                         
@@ -60,16 +59,16 @@ progress::-moz-progress-bar {
                         fixedRow(column(10, offset = 1,
                                         br(),
                                         p(strong("Contact")),
-                                        p("If you have any feedback on the Shiny application, feel free to email us: ", strong("hiki.kyoshiro@nies.go.jp"), ".")
+                                        p("If you have any feedback on the Shiny application, feel free to email us: ", strong("referencelab.risk@nies.go.jp"), ".")
                         )),
                       )
              ),
              
              ####################################################################################
-             ####### STEP 1: Data upload ########################################################
+             ####### Data upload & analysis #####################################################
              ####################################################################################
-             tabPanel(HTML("<font face=verdana size=3 color=#009E73>Data upload</font>"),
-                      br(), HTML("<font face=verdana size=5 color=#009E73><b>Upload ecotoxicity data</b></font>"), br(), br(), br(),
+             tabPanel(HTML("<font face=verdana size=3 color=#009E73>Analysis</font>"),
+                      br(), HTML("<font face=verdana size=5 color=#009E73><b>Upload and analyze ecotoxicity data</b></font>"), br(), br(), br(),
                       fixedRow(
                         ###### Select type of data                                
                         sidebarPanel(
@@ -82,7 +81,7 @@ progress::-moz-progress-bar {
                                                    "Fish: TG203" = "TG203",
                                                    "Chironomus: TG218,219" = "TG218",
                                                    "Chironomus: TG235" = "TG235"),
-                                       selected = "Algae: TG201"),
+                                       selected = "TG201"),
                           selectInput("conc_unit", "Concentration Unit", 
                                       choices = c("g/L", "mg/L", "µg/L", "ng/L")),
                           ###### For algae (TG201)
@@ -92,13 +91,21 @@ progress::-moz-progress-bar {
                             fileInput('datafile_TG201',
                                       'Select an input file',
                                       accept = c('.csv')),
-                            h5("You can download an example file: ", a("here", href = "AlgaeData_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'AlgaeData_sample.csv') ),
+                            h5("You can download an example file: ", a("here", href = "AlgaeTG201Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'AlgaeTG201Data_sample.csv') ),
                             br(),
                             radioButtons('model_TG201',
                                          'Select fitting model',
                                          choices = c('log-logistic 2 parameters' = 'll2',
                                                      'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll2')
+                                         selected = 'll2'),
+                            br(),
+                            numericInput(inputId="ecx_TG201",label="Determine effect concentration X%",value=50,min=0,max=100),
+                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
+                            br(),
+                            radioButtons('test_method_TG201',
+                                         'Select hypothesis testing method',
+                                         choices = c('Dunnett test' = 'Dunnett'),
+                                         selected = 'Dunnett')
                             ),
                           
                           ###### For daphnia (TG202)
@@ -114,7 +121,12 @@ progress::-moz-progress-bar {
                                          'Select fitting model',
                                          choices = c('log-logistic 2 parameters' = 'll2',
                                                      'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll2')
+                                         selected = 'll2'),
+                            br(),
+                            numericInput(inputId="ecx_TG201",label="Determine effect concentration X%",value=50,min=0,max=100),
+                            br(),
+                            HTML("<b><size=2>Select hypothesis testing method</font></b>"),
+                            h5('No need to perform a hypothesis testing for TG202')
                             ),
                           
                           ###### For fish (TG203)
@@ -132,7 +144,15 @@ progress::-moz-progress-bar {
                                          'Select fitting model',
                                          choices = c('log-logistic 2 parameters' = 'll2',
                                                      'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll2')
+                                         selected = 'll2'),
+                            br(),
+                            numericInput(inputId="ecx_TG201",label="Determine effect concentration X%",value=50,min=0,max=100),
+                            br(),
+                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
+                            radioButtons('test_method_TG203',
+                                         'Select hypothesis testing method',
+                                         choices = c('Dunnett test' = 'Dunnett'),
+                                         selected = 'Dunnett')
                             ),
                           
                           ###### For chironomus (TG218,219)
@@ -150,7 +170,9 @@ progress::-moz-progress-bar {
                                          'Select fitting model',
                                          choices = c('log-logistic 2 parameters' = 'll2',
                                                      'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll2')
+                                         selected = 'll2'),
+                            br(),
+                            numericInput(inputId="ecx_TG218",label="Determine effect concentration X%",value=50,min=0,max=100)
                             ),
                           
                           ###### For chironomus (TG235)
@@ -168,8 +190,18 @@ progress::-moz-progress-bar {
                                          'Select fitting model',
                                          choices = c('log-logistic 2 parameters' = 'll2',
                                                      'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll2')
+                                         selected = 'll2'),
+                            br(),
+                            numericInput(inputId="ecx_TG235",label="Determine effect concentration X%",value=50,min=0,max=100),
+                            br(),
+                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
+                            radioButtons('test_method_TG235',
+                                         'Select hypothesis testing method',
+                                         choices = c("Dunnett's test" = 'Dunnett',
+                                                     "Fisher's exact test with BH correction" = 'Fisher'),
+                                         selected = 'Dunnett')
                             ),
+
                           
                           fixedRow(
                             column(12, align="center",
@@ -182,99 +214,30 @@ progress::-moz-progress-bar {
                           width = 9,
                           DT::dataTableOutput('rawdata'),
                           br(),
-                          h5("Effect concentrations"),
                           tableOutput('drc_result'),
                           withSpinner(plotOutput('drc_plot', width = "100%", height = "850px"), type = 4, color = '#009E73'),
                           br(),
+                          withSpinner(verbatimTextOutput("test_result")),
                           br()
                         )
                       )
              ),
              
-             
              ####################################################################################
-             ####### STEP 2: hypothesis testing #################################################
+             ####### Report   ###################################################################
              ####################################################################################
-             tabPanel(HTML("<font face=verdana size=3 color=#009E73>Hypothesis testing</font>"),
-                      fixedRow(
-                        column(12, 
-                               br(), HTML("<font face=verdana size=5 color=#009E73><b>Selection of hypothesis test methods</b></font>"), br(), br(), br(),
-                               fixedRow(
-                                 sidebarPanel(
-                                   style = "background-color: #009E73;",
-                                   width = 3,
-                                   ###### For algae (TG201)
-                                   conditionalPanel(
-                                     condition = "input.test_type == 'TG201'",
-                                     tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                                     radioButtons('test_method_TG201',
-                                         'Select hypothesis testing method',
-                                         choices = c('Dunnett test' = 'Dunnett'),
-                                         selected = 'Dunnett'),
-                                     fixedRow(
-                                       column(12, align="center",
-                                              actionButton("buttonRunStep2", "Run", icon = icon("file-import"), style='font-size:200%')
-                                              )
-                                       )
-                                     ),
-                                   ###### For daphnia (TG202)
-                                   conditionalPanel(
-                                     condition = "input.test_type == 'TG202'",
-                                     tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                                     h5('No need to perform a hypothesis testing')
-                                     ),
-                                    ###### For fish (TG203)
-                                   conditionalPanel(
-                                     condition = "input.test_type == 'TG203'",
-                                     tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                                     radioButtons('test_method_TG203',
-                                         'Select hypothesis testing method',
-                                         choices = c('Dunnett test' = 'Dunnett'),
-                                         selected = 'Dunnett'),
-                                     fixedRow(
-                                       column(12, align="center",
-                                              actionButton("buttonRunStep2", "Run", icon = icon("file-import"), style='font-size:200%')
-                                              )
-                                       )
-                                     ),
-                                   ###### For chironomus (TG235)
-                                   conditionalPanel(
-                                     condition = "input.test_type == 'TG235'",
-                                     tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                                     radioButtons('test_method_TG235',
-                                         'Select hypothesis testing method',
-                                         choices = c("Dunnett's test" = 'Dunnett',
-                                                     "Fisher's exact test" = 'Fisher'),
-                                         selected = 'Dunnett'),
-                                     fixedRow(
-                                       column(12, align="center",
-                                              actionButton("buttonRunStep2", "Run", icon = icon("file-import"), style='font-size:200%')
-                                              )
-                                       )
-                                     ),
-                                   
-                            ),
-                            mainPanel(
-                              width = 9,
-                              withSpinner(verbatimTextOutput('test_result'), type = 4, color = '#009E73')
-                              )
-                            )
-                            )
-                        )),
-
-             ####################################################################################
-             ####### Info   #####################################################################
-             ####################################################################################
-             tabPanel(HTML("<font face=verdana size=3 color=#009E73>R code </font>"),
+             tabPanel(HTML("<font face=verdana size=3 color=#009E73>Download report </font>"),
                       fixedRow(
                         column(8, 
-                               br(), HTML("<font face=verdana size=5 color=#009E73><b>R code for the analysis</b></font>"), br(), br(), br(),
-                               downloadButton("buttonDownRCode", "Download R Code", icon = icon("fas fa-download"), style = 'background-color:#e6e6e6; color:#000000; border-color:#9d9d9d;'), br(), br(),
-                               verbatimTextOutput('printRCode'), br(), br(),
+                               br(), HTML("<font face=verdana size=5 color=#009E73><b>Download the analysis report</b></font>"),
+                               br(), br(), br(),
+                               downloadButton("buttonDownloadReport", "Download report", icon = icon("fas fa-download"),
+                                              style = 'background-color:#e6e6e6; color:#000000; border-color:#9d9d9d;'),
+                               br(),
+                               br(),
+                               verbatimTextOutput('printReport'), br(), br(),
                                br()
                         ))
              )
   )
 )
-
-

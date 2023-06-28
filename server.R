@@ -256,56 +256,20 @@ server <- function(input, output, session) {
   
   
   ####################################################################################
-  ####### R CODE #####################################################################
+  ####### Report  ####################################################################
   ####################################################################################
-  
-  output$printReport <- renderText({
+  output$buttonDownloadReport <- downloadHandler(
+    filename = function() {
+      paste('report', sep = '.', switch(input$format, PDF = 'pdf', Word = 'docx') )
+    },
+    content = function(file) {
+      tempReport <- file.path(tempdir(), "report.Rmd")
+      file.copy("report.Rmd", tempReport, overwrite = TRUE)
+      rmarkdown::render(tempReport, output_file = file,
+                        switch(input$format, PDF = pdf_document(), Word = word_document())  )
+    }
+    )
+
     
-    if(intest_type() == 'TG201') {
-      req(input$datafile_TG201)
-    } else if(intest_type() == 'TG202') {
-      req(input$datafile_TG202)
-    } else if(intest_type() == 'TG203') {
-      req(input$datafile_TG203)
-    } else if(intest_type() == 'TG218') {
-      req(input$datafile_TG218)
-    } else if(intest_type() == 'TG235') {
-      req(input$datafile_TG235)
-    } 
-    text <- c("library(drc)",
-              "",
-              paste0("o <- ", ifelse(input$test_type == 'TG201', 
-                                     paste0("TG201('", input$datafile_TG201$name), 
-                                     ifelse(input$test_type == 'TG202', 
-                                            paste0("TG202('", input$datafile_TG202$name), 
-                                            ifelse(input$test_type == 'TG203', 
-                                                   paste0("TG203('", input$datafile_TG203$name),
-                                                   ifelse(input$test_type == 'TG218', 
-                                                          paste0("TG218('", input$datafile_TG218$name),
-                                                          ifelse(input$test_type == 'TG235',
-                                                                 paste0("TG235('", input$datafile_TG235$name)
-                                                                 )
-                                                          )
-                                                   )
-                                            )
-                                     )
-                     ),
-              "print(o)",
-              "plot(o)",
-              "",
-              "",
-    )
-    output$buttonDownloadReport <- downloadHandler(
-      filename = function(){
-        paste0("Rcode-", Sys.Date(), ".pdf")
-      },
-      content = function(file) {
-        writeLines(paste(text, collapse = "\n"), file)
-      },
-      contentType = {"text/plain"}
-    )
-    return(paste(text, collapse = "\n"))
-  })
-  
 }
 

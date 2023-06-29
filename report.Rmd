@@ -13,7 +13,8 @@ head( filedata() )
 # Check mean and sd at each concentration
 filedata() %>%
   group_by(CONC,TIME) %>% 
-  summarize_at(vars(...), .funs= c(mean,sd))
+  summarize_all(.funs= c(mean,sd)) 
+
 ```
 
 

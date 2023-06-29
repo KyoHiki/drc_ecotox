@@ -5,10 +5,19 @@ output:
   word_document:
 ---
 
+## 1. Summary of input data
 ```{r data, collapse=TRUE}
-options(digits = 2)
-
+# Check the first six rows of input data
 head( filedata() )
+
+# Check mean and sd at each concentration
+filedata() %>%
+  group_by(CONC,TIME) %>% 
+  summarize_at(vars(...), .funs= c(mean,sd))
 ```
 
 
+## 4. Session Info
+```{r sessionInfo}
+sessionInfo()
+```

@@ -2,29 +2,27 @@
 title: "Analysis report by drc-ecotox (β)"
 date: "`r format(Sys.time(), '%Y/%m/%d')`"
 output: word_document
-params:
-  test_type: NA
 ---
 
 ## 0. Test type
 ```{r ,echo=FALSE, include=FALSE}
-if(test_type == 'TG201'){
+if(input$test_type == 'TG201'){
   h1("Algae: TG201")
-}else if(test_type == 'TG202') {
+}else if(input$test_type == 'TG202') {
   h1("")
 }
 ```
   
 
 ## 1. Summary of input data
-```{r data, collapse=TRUE}
+```{r data, collapse=TRUE, include=FALSE, echo=FALSE}
 # Check the first six rows of input data
 head( filedata() )
 
 # Check mean and sd at each concentration
-if(test_type == 'TG201'){
+if(input$test_type == 'TG201'){
   h1(paste("1",input$ii))
-}else if(test_type == 'TG235') {
+}else if(input$test_type == 'TG235') {
   filedata() %>%
   group_by(CONC,TIME) %>% 
   summarize_at(vars(-BEAKER),.funs= c(mean,sd)) %>%

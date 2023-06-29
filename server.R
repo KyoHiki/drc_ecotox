@@ -303,18 +303,18 @@ server <- function(input, output, session) {
     owd <- setwd(tempdir())
     on.exit(setwd(owd))
     if(intest_type() == 'TG201') {
-      src <- normalizePath('www/report_TG201.Rmd')
-      file.copy(src, 'www/report_TG201.Rmd', overwrite = TRUE)
-      out <- render('www/report_TG201.Rmd', switch(
+      src <- normalizePath('report_TG201.Rmd')
+      file.copy(src, 'report_TG201.Rmd', overwrite = TRUE)
+      out <- render('report_TG201.Rmd', switch(
         input$format,
       #PDF = pdf_document(), 
         Word = word_document()
       ))
       file.rename(out, file)
     } else if(intest_type() == 'TG235'){
-      src <- normalizePath('www/report_TG235.Rmd')
-      file.copy(src, 'www/report_TG235.Rmd', overwrite = TRUE)
-      out <- render('www/report_TG235.Rmd', switch(
+      src <- normalizePath('report_TG235.Rmd')
+      file.copy(src, 'report_TG235.Rmd', overwrite = TRUE)
+      out <- render('report_TG235.Rmd', switch(
         input$format,
       #PDF = pdf_document(), 
         Word = word_document()

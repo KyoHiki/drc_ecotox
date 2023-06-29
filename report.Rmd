@@ -5,15 +5,31 @@ output:
   word_document:default
 ---
 
+## 0. Test type
+```{r ,echo=FALSE, include=FALSE}
+if(input$test_type == 'TG201'){
+  h1(paste("1",input$ii))
+}else if(input$test_type == 'TG202') {
+  h1(paste("2",input$ii))
+}
+```
+  
+
 ## 1. Summary of input data
 ```{r data, collapse=TRUE}
 # Check the first six rows of input data
 head( filedata() )
 
 # Check mean and sd at each concentration
-filedata() %>%
+if(input$test_type == 'TG201'){
+  h1(paste("1",input$ii))
+}else if(input$test_type == 'TG235') {
+  filedata() %>%
   group_by(CONC,TIME) %>% 
-  summarize_at(vars(-BEAKER),.funs= c(mean,sd)) 
+  summarize_at(vars(-BEAKER),.funs= c(mean,sd)) %>%
+  rename(TOTAL_mean = TOTAL_fn1, TOTAL_sd =TOTAL_fn2, IMMOBILIZED_mean = IMMOBILIZED_fn1, IMMOBILIZED_sd = IMMOBILIZED_fn2)
+}
+
 
 ```
 

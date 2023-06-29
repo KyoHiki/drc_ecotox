@@ -300,11 +300,11 @@ server <- function(input, output, session) {
                    Word = 'docx') )
     },
   content = function(file) {
-      src <- normalizePath('report.Rmd')
+      src <- base::normalizePath('report.Rmd')
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
       file.copy(src, 'report.Rmd', overwrite = TRUE)
-      out <- render('report.Rmd', switch(
+      out <- rmarkdown::render('report.Rmd', switch(
         input$format,
       #PDF = pdf_document(), 
         Word = word_document()

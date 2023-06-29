@@ -8,9 +8,9 @@ params:
 
 ## 0. Test type
 ```{r ,echo=FALSE, include=FALSE}
-if(input$test_type == 'TG201'){
+if(test_type == 'TG201'){
   h1("Algae: TG201")
-}else if(input$test_type == 'TG202') {
+}else if(test_type == 'TG202') {
   h1("")
 }
 ```
@@ -22,9 +22,9 @@ if(input$test_type == 'TG201'){
 head( filedata() )
 
 # Check mean and sd at each concentration
-if(input$test_type == 'TG201'){
+if(test_type == 'TG201'){
   h1(paste("1",input$ii))
-}else if(input$test_type == 'TG235') {
+}else if(test_type == 'TG235') {
   filedata() %>%
   group_by(CONC,TIME) %>% 
   summarize_at(vars(-BEAKER),.funs= c(mean,sd)) %>%

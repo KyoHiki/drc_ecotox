@@ -3,6 +3,8 @@ title: "Analysis report by drc-ecotox (β)"
 date: "`r format(Sys.time(), '%Y/%m/%d')`"
 output:
   word_document:default
+params:
+  test_type: NA
 ---
 
 ## 0. Test type

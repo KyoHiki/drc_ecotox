@@ -1,5 +1,5 @@
 server <- function(input, output, session) {
- 
+  
   
   ####################################################################################
   ####### Data upload & analysis #####################################################
@@ -36,6 +36,11 @@ server <- function(input, output, session) {
         req(input$datafile_TG203)
         validateFile(input$datafile_TG203)
         ff <- input$datafile_TG203
+        read.csv(file=ff$datapath, header=TRUE)
+      }  else if(intest_type() == 'TG218') {
+        req(input$datafile_TG218)
+        validateFile(input$datafile_TG218)
+        ff <- input$datafile_TG218
         read.csv(file=ff$datapath, header=TRUE)
       }  else if(intest_type() == 'TG235') {
         req(input$datafile_TG235)
@@ -80,6 +85,20 @@ server <- function(input, output, session) {
         }
       return(fit)
       }
+    else if(intest_type() == 'TG218') {
+        if(inmodel_218() == 'll2') {
+          fit1 <- drm( DEAD/TOTAL ~ CONC, data = filedata(), fct = LL.2(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.2(), type="binomial")
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.2(), type="continuous")
+        }
+        else if(inmodel_218() == 'll4') {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.4(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.4(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.4(), type="continuous")
+        }
+      fit <- list(fit1 = fit1, fit2 = fit2, fit3 = fit3)
+      return(fit)
+      }
     else if(intest_type() == 'TG235') {
         if(inmodel_235() == 'll2') {
           fit1 <- drm( IMMOBILIZED/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.2(), type="binomial")
@@ -118,7 +137,22 @@ server <- function(input, output, session) {
       XX <- input$ecx_TG203
       drc_df <- data.frame(ED(fitmodel(), c(XX),interval = "delta",display=FALSE))
       colnames(drc_df) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
-      }
+    }
+    else if(intest_type() == 'TG218') {
+      fit <- fitmodel()
+      fit1 <- fit$fit1
+      fit2 <- fit$fit2
+      fit3 <- fit$fit3
+      XX <- input$ecx_TG218
+      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE)) 
+      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE))
+      drc_df3 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE))
+      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      colnames(drc_df3) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      drc_df <- rbind(drc_df1,drc_df2,drc_df3)
+      rownames(drc_df) <- c('Mortality','Emergence ratio',"Development rate")
+    }
     else if(intest_type() == 'TG235') {
       fit <- fitmodel()
       fit1 <- fit$fit1
@@ -188,7 +222,7 @@ server <- function(input, output, session) {
   
    inmethod_201 <- reactive({input$test_method_TG201})
    inmethod_203 <- reactive({input$test_method_TG203})
-#  inmethod_218 <- reactive({input$test_method_TG218})
+   inmethod_218 <- reactive({input$test_method_TG218})
    inmethod_235 <- reactive({input$test_method_TG235})
 
     TestResult <- eventReactive(input$buttonRunStep1,{
@@ -263,13 +297,20 @@ server <- function(input, output, session) {
       paste('report', sep = '.', switch(input$format, PDF = 'pdf', Word = 'docx') )
     },
     content = function(file) {
-      tempReport <- file.path(tempdir(), "report.Rmd")
-      file.copy("report.Rmd", tempReport, overwrite = TRUE)
-      rmarkdown::render(tempReport, output_file = file,
-                        switch(input$format, PDF = pdf_document(), Word = word_document())  )
+      src <- normalizePath('report.Rmd')
+      # temporarily switch to the temp dir, in case you do not have write
+      # permission to the current working directory
+      wd <- getwd()
+      on.exit(setwd(wd))
+      file.copy(src, 'report.Rmd', overwrite = TRUE)
+      out <- render('report.Rmd', switch(
+        input$format,
+        PDF = pdf_document(), Word = word_document()
+      ))
+      file.rename(out, file)
     }
     )
 
     
 }
-
+                                

@@ -1,14 +1,14 @@
-```{r model, collapse=TRUE}
-options(digits = 4)
-fit <- lm(mpg~cyl, data = mtcars)
-b   <- coef(fit)
-summary(fit)
+---
+title: "Analysis report by drc-ecotox (β)"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+output:
+  word_document:
+---
+
+```{r data, collapse=TRUE}
+options(digits = 2)
+
+head( filedata() )
 ```
 
-Below is a scatter plot with the regression line.
 
-```{r plot, fig.height=5}
-par(mar = c(4, 4, 1, 1))
-plot(mpg~cyl, data = mtcars, pch = 19, col = 'gray')
-abline(fit, col = 'red', lwd = 2)
-```

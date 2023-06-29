@@ -12,8 +12,8 @@ head( filedata() )
 
 # Check mean and sd at each concentration
 filedata() %>%
-  group_by(CONC,TIME) %>% 
-  summarize_at(vars(-BEAKER),.funs= c(mean,sd)) 
+  group_by(CONC) %>% 
+  summarize_at(vars(-DATAID),.funs= c(mean,sd)) 
 
 ```
 

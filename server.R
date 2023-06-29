@@ -300,18 +300,27 @@ server <- function(input, output, session) {
                    Word = 'docx') )
     },
   content = function(file) {
-      src <- normalizePath('report.Rmd')
-      # temporarily switch to the temp dir, in case you do not have write
-      # permission to the current working directory
-      owd <- setwd(tempdir())
-      on.exit(setwd(owd))
-      file.copy(src, 'report.Rmd', overwrite = TRUE)
-      out <- render('report.Rmd', switch(
+    owd <- setwd(tempdir())
+    on.exit(setwd(owd))
+    if(intest_type() == 'TG201') {
+      src <- normalizePath('www/report_TG201.Rmd')
+      file.copy(src, 'www/report_TG201.Rmd', overwrite = TRUE)
+      out <- render('www/report_TG201.Rmd', switch(
         input$format,
       #PDF = pdf_document(), 
         Word = word_document()
       ))
       file.rename(out, file)
+    } else if(intest_type() == 'TG235'){
+      src <- normalizePath('www/report_TG235.Rmd')
+      file.copy(src, 'www/report_TG235.Rmd', overwrite = TRUE)
+      out <- render('www/report_TG235.Rmd', switch(
+        input$format,
+      #PDF = pdf_document(), 
+        Word = word_document()
+      ))
+      file.rename(out, file)    
+    }
     }
     )
 

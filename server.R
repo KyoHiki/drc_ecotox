@@ -301,8 +301,8 @@ server <- function(input, output, session) {
     },
   content = function(file) {
       src <- normalizePath('report.Rmd')
-      wd <- getwd()
-      on.exit(setwd(wd))
+      owd <- setwd(tempdir())
+      on.exit(setwd(owd))
       file.copy(src, 'report.Rmd', overwrite = TRUE)
       out <- render('report.Rmd', switch(
         input$format,

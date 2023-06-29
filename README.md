@@ -6,6 +6,6 @@
 # How to use
 Load the Shiny R package in your R session and perform the following command:
 ```r
-library(Shiny)
+library(shiny)
 runGitHub("/KyoHiki/drc_ecotox")
 ```

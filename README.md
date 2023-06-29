@@ -7,5 +7,5 @@
 Load the Shiny R package in your R session and perform the following command:
 ```r
 library(shiny)
-runGitHub("/KyoHiki/drc_ecotox")
+runGitHub("KyoHiki/drc_ecotox")
 ```

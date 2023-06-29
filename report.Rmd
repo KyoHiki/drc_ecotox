@@ -15,7 +15,7 @@ if(input$test_type == 'TG201'){
   
 
 ## 1. Summary of input data
-```{r data, collapse=TRUE, include=FALSE, echo=FALSE}
+```{r data, collapse=TRUE, echo=FALSE}
 # Check the first six rows of input data
 head( filedata() )
 

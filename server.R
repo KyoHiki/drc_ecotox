@@ -300,31 +300,19 @@ server <- function(input, output, session) {
                    Word = 'docx') )
     },
   content = function(file) {
-    if(intest_type() == 'TG201') {
-      owd <- setwd(tempdir())
-      on.exit(setwd(owd))
-      src <- normalizePath('report_TG201.Rmd')
-      file.copy(src, 'report_TG201.Rmd', overwrite = TRUE)
-      out <- render('report_TG201.Rmd', switch(
+      src <- normalizePath('report.Rmd')
+      wd <- getwd()
+      on.exit(setwd(wd))
+      file.copy(src, 'report.Rmd', overwrite = TRUE)
+      out <- render('report.Rmd', switch(
         input$format,
       #PDF = pdf_document(), 
         Word = word_document()
       ))
       file.rename(out, file)
-    } else if(intest_type() == 'TG235'){
-      owd <- setwd(tempdir())
-      on.exit(setwd(owd))
-      src <- normalizePath('report_TG235.Rmd')
-      file.copy(src, 'report_TG235.Rmd', overwrite = TRUE)
-      out <- render('report_TG235.Rmd', switch(
-        input$format,
-      #PDF = pdf_document(), 
-        Word = word_document()
-      ))
-      file.rename(out, file)    
-    }
     }
     )
+
 
 
     

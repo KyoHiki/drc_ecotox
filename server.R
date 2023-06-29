@@ -304,7 +304,8 @@ server <- function(input, output, session) {
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
       file.copy(src, 'report.Rmd', overwrite = TRUE)
-      out <- rmarkdown::render('report.Rmd', switch(
+      params <- list(test_type = input$test_type)
+      out <- rmarkdown::render('report.Rmd',params = params, switch(
         input$format,
       #PDF = pdf_document(), 
         Word = word_document()

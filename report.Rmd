@@ -4,7 +4,7 @@ date: "`r format(Sys.time(), '%Y/%m/%d')`"
 output:
   word_document:default
 params:
-  test_type: NA
+  test_type: 
 ---
 
 ## 0. Test type

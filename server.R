@@ -292,7 +292,7 @@ server <- function(input, output, session) {
   ####################################################################################
   ####### Report  ####################################################################
   ####################################################################################
-  output$buttonDownloadReport <- downloadHandler(
+  output$DownloadReport <- downloadHandler(
     filename = function() {
       paste('report', sep = '.', 
             switch(input$format,

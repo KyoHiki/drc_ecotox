@@ -21,7 +21,7 @@ head( filedata() )
 
 # Check mean and sd at each concentration
 if(input$test_type == 'TG201'){
-  h1(paste("1",input$ii))
+  filedata()
 }else if(input$test_type == 'TG235') {
   filedata() %>%
   group_by(CONC,TIME) %>% 

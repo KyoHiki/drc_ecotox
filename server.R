@@ -294,9 +294,12 @@ server <- function(input, output, session) {
   ####################################################################################
   output$buttonDownloadReport <- downloadHandler(
     filename = function() {
-      paste('report', sep = '.', switch(input$format, PDF = 'pdf', Word = 'docx') )
+      paste('report', sep = '.', 
+            switch(input$format,
+                   #PDF = 'pdf',
+                   Word = 'docx') )
     },
-    content = function(file) {
+  content = function(file) {
       src <- normalizePath('report.Rmd')
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory
@@ -305,11 +308,13 @@ server <- function(input, output, session) {
       file.copy(src, 'report.Rmd', overwrite = TRUE)
       out <- render('report.Rmd', switch(
         input$format,
-        PDF = pdf_document(), Word = word_document()
+      #PDF = pdf_document(), 
+        Word = word_document()
       ))
       file.rename(out, file)
     }
     )
+
 
     
 }

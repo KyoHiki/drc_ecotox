@@ -237,7 +237,7 @@ progress::-moz-progress-bar {
                         column(8, 
                                br(), HTML("<font face=verdana size=5 color=#009E73><b>Download the analysis report</b></font>"),
                                br(), br(), br(),
-                               radioButtons("format","Select document format", c('PDF', 'Word'), inline = TRUE),
+                               radioButtons("format","Select document format", c('Word'), inline = TRUE),
                                downloadButton("buttonDownloadReport", "Download report", icon = icon("fas fa-download"),
                                               style = 'background-color:#e6e6e6; color:#000000; border-color:#9d9d9d;'),
                                br(),

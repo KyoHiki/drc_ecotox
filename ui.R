@@ -3,6 +3,8 @@ library(ggplot2)
 library(tidyverse)
 library(drc)
 library(multcomp)
+library(here)
+library(rmarkdown)
 library(shinyjs)
 library(shinycssloaders)
 
@@ -67,7 +69,7 @@ progress::-moz-progress-bar {
              ####################################################################################
              ####### Data upload & analysis #####################################################
              ####################################################################################
-             tabPanel(HTML("<font face=verdana size=5 color=#009E73>Analysis</font>"),
+             tabPanel(HTML("<font face=verdana size=4 color=#009E73>Analysis</font>"),
                       br(), HTML("<font face=verdana size=5 color=#009E73><b>Upload and analyze ecotoxicity data</b></font>"), br(), br(), br(),
                       fixedRow(
                         ###### Select type of data                                
@@ -92,7 +94,7 @@ progress::-moz-progress-bar {
                                       'Select an input file',
                                       accept = c('.csv')),
                             h5("You can download an example file: ", a("here", href = "AlgaeTG201Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'AlgaeTG201Data_sample.csv') ),
-                            br(),
+                            br(),br(),
                             radioButtons('model_TG201',
                                          'Select fitting model',
                                          choices = c('log-logistic 2 parameters' = 'll2',
@@ -117,6 +119,7 @@ progress::-moz-progress-bar {
                                       accept = c('.csv')),
                             h5("You can download an example file: ", a("here", href = "DaphniaTG202Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'DaphniaTG202Data_sample.csv') ),
                             br(),
+                            br(),
                             radioButtons('model_TG202',
                                          'Select fitting model',
                                          choices = c('log-logistic 2 parameters' = 'll2',
@@ -139,6 +142,7 @@ progress::-moz-progress-bar {
                             h5("You can download an example file: ", 
                                a("here", href = "FishTG203Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;",
                                  download = 'FishTG203Data_sample.csv') ),
+                            br(),
                             br(),
                             radioButtons('model_TG203',
                                          'Select fitting model',
@@ -166,6 +170,7 @@ progress::-moz-progress-bar {
                                a("here", href = "ChironomusTG218Data_sample.csv", TARGET = "_blank",style="text-decoration:underline;",
                                  download = 'ChironomusTG218Data_sample.csv') ),
                             br(),
+                            br(),
                             radioButtons('model_TG218',
                                          'Select fitting model',
                                          choices = c('log-logistic 2 parameters' = 'll2',
@@ -185,6 +190,7 @@ progress::-moz-progress-bar {
                             h5("You can download an example file: ", 
                                a("here", href = "ChironomusTG235Data_sample.csv", TARGET = "_blank",style="text-decoration:underline;",
                                  download = 'ChironomusTG235Data_sample.csv') ),
+                            br(),
                             br(),
                             radioButtons('model_TG235',
                                          'Select fitting model',
@@ -226,16 +232,16 @@ progress::-moz-progress-bar {
              ####################################################################################
              ####### Report   ###################################################################
              ####################################################################################
-             tabPanel(HTML("<font face=verdana size=5 color=#009E73>Download report </font>"),
+             tabPanel(HTML("<font face=verdana size=4 color=#009E73>Download report </font>"),
                       fixedRow(
                         column(8, 
                                br(), HTML("<font face=verdana size=5 color=#009E73><b>Download the analysis report</b></font>"),
                                br(), br(), br(),
+                               radioButtons("format","Select document format", c('PDF', 'Word'), inline = TRUE),
                                downloadButton("buttonDownloadReport", "Download report", icon = icon("fas fa-download"),
                                               style = 'background-color:#e6e6e6; color:#000000; border-color:#9d9d9d;'),
                                br(),
                                br(),
-                               verbatimTextOutput('printReport'), br(), br(),
                                br()
                         ))
              )

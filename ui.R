@@ -158,7 +158,6 @@ progress::-moz-progress-bar {
                                          choices = c("Fisher's exact test with BH correction" = 'Fisher'),
                                          selected = 'Fisher')
                             ),
-                            ),
                           
                           ###### For chironomus (TG218,219)
                           conditionalPanel(

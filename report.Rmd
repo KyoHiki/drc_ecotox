@@ -7,9 +7,15 @@ output: word_document
 ## 0. Test type
 ```{r ,echo=FALSE, include=FALSE}
 if(input$test_type == 'TG201'){
-  h1("Algae: TG201")
+  print("Test No. 201: Freshwater Alga and Cyanobacteria, Growth Inhibition Test")
 }else if(input$test_type == 'TG202') {
-  h1("")
+  print("Test No. 202: Daphnia sp. Acute Immobilisation Test")
+} else if(input$test_type == 'TG203') {
+  print("Test No. 203: Fish, Acute Toxicity Test")
+} else if(input$test_type == 'TG218') {
+  print("Test No. 218: Sediment-Water Chironomid Toxicity Using Spiked Sediment or Test No. 219: Sediment-Water Chironomid Toxicity Using Spiked Water")
+} else if(input$test_type == 'TG235') {
+  print("Test No. 235: Chironomus sp., Acute Immobilisation Test")
 }
 ```
   
@@ -20,9 +26,9 @@ if(input$test_type == 'TG201'){
 head( filedata() )
 
 # Check mean and sd at each concentration
-if(input$test_type == 'TG201'){
+if(input$test_type == 'TG202' | input$test_type == 'TG235'){
   filedata()
-}else if(input$test_type == 'TG235') {
+}else if(input$test_type == 'TG203') {
   filedata() %>%
   group_by(CONC,TIME) %>% 
   summarize_at(vars(-BEAKER),.funs= c(mean,sd)) %>%

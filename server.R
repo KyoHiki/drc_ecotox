@@ -146,7 +146,7 @@ server <- function(input, output, session) {
       fit2 <- fit$fit2
       fit3 <- fit$fit3
       fit4 <- fit$fit4
-      XX <- input$ecx_TG202
+      XX <- input$ecx_TG203
       drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE)) 
       drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE))
       drc_df3 <- data.frame(ED(fit3, c(XX),interval = "delta",display=FALSE)) 

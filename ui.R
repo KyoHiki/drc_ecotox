@@ -155,8 +155,9 @@ progress::-moz-progress-bar {
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
                             radioButtons('test_method_TG203',
                                          'Select hypothesis testing method',
-                                         choices = c('Dunnett test' = 'Dunnett'),
-                                         selected = 'Dunnett')
+                                         choices = c("Fisher's exact test with BH correction" = 'Fisher'),
+                                         selected = 'Fisher')
+                            ),
                             ),
                           
                           ###### For chironomus (TG218,219)

@@ -78,11 +78,18 @@ server <- function(input, output, session) {
       }
     else if(intest_type() == 'TG203') {
         if(inmodel_203() == 'll2') {
-          fit <- drm( DEAD/TOTAL ~ CONC, data = filedata(), fct = LL.2(), type="binomial")
+          fit1 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.2(), type="binomial")
+          fit2 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.2(), type="binomial")
+          fit3 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="72"), fct = LL.2(), type="binomial")
+          fit4 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="96"), fct = LL.2(), type="binomial")
         }
         else if(inmodel_203() == 'll4') {
-          fit <- drm( DEAD/TOTAL ~ CONC, data = filedata(), fct = LL.4(), type="binomial")
+          fit1 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.4(), type="binomial")
+          fit2 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.4(), type="binomial")
+          fit3 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="72"), fct = LL.4(), type="binomial")
+          fit4 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="96"), fct = LL.4(), type="binomial")
         }
+      fit <- list(fit1 = fit1, fit2 = fit2, fit3=fit3, fit4=fit4)
       return(fit)
       }
     else if(intest_type() == 'TG218') {
@@ -134,9 +141,22 @@ server <- function(input, output, session) {
       rownames(drc_df) <- c('24 h','48 h')
       }
     else if(intest_type() == 'TG203') {
-      XX <- input$ecx_TG203
-      drc_df <- data.frame(ED(fitmodel(), c(XX),interval = "delta",display=FALSE))
-      colnames(drc_df) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      fit <- fitmodel()
+      fit1 <- fit$fit1
+      fit2 <- fit$fit2
+      fit3 <- fit$fit3
+      fit4 <- fit$fit4
+      XX <- input$ecx_TG202
+      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE)) 
+      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE))
+      drc_df3 <- data.frame(ED(fit3, c(XX),interval = "delta",display=FALSE)) 
+      drc_df4 <- data.frame(ED(fit4, c(XX),interval = "delta",display=FALSE))
+      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      colnames(drc_df3) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      colnames(drc_df4) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      drc_df <- rbind(drc_df1,drc_df2, drc_df3, drc_df4)
+      rownames(drc_df) <- c('24 h','48 h','72 h','96 h')
     }
     else if(intest_type() == 'TG218') {
       fit <- fitmodel()
@@ -194,9 +214,24 @@ server <- function(input, output, session) {
       legend("topleft",inset=0.05, legend = c("24 h","48 h"), col = c("black","#D55E00"), lty = c("dotted","solid"),cex=2)
     }
     else if(intest_type() == 'TG203') {
+      fit <- fitmodel()
+      fit1 <- fit$fit1
+      fit2 <- fit$fit2
+      fit3 <- fit$fit3
+      fit4 <- fit$fit4
       par(mar=c(5,5,2,2))
-      plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality",
-           cex=2,cex.axis =2, cex.lab=2)
+      plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality", 
+           ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
+      par(new=TRUE)
+      plot(fit2, log="x", broken=TRUE, xlab="", ylab="", main="",
+           ylim=c(0,1), col="#D55E00",cex=2,cex.axis =2, cex.lab=2)
+      par(new=TRUE)
+      plot(fit3, log="x", broken=TRUE, xlab="", ylab="", main="",
+           ylim=c(0,1), lty="dotted", col="tomato",cex=2,cex.axis =2, cex.lab=2)
+      par(new=TRUE)
+      plot(fit4, log="x", broken=TRUE, xlab="", ylab="", main="",
+           ylim=c(0,1), col="black",cex=2,cex.axis =2, cex.lab=2)
+      legend("topleft",inset=0.05, legend = c("24 h","48 h","72 h","96 h"), col = c("black","#D55E00","tomato","black"), lty = c("dotted","solid","dotted","solid"),cex=2)
     }
     else if(intest_type() == 'TG235') {
       fit <- fitmodel()
@@ -234,12 +269,51 @@ server <- function(input, output, session) {
         Res
         } 
       else if(intest_type() == "TG203") {
-        data=filedata()
-        data$CONC <- as.factor(data$CONC)
-        fit <- glm( cbind(DEAD,TOTAL-DEAD) ~ CONC, data = data, weights=TOTAL, family=binomial(link="logit")  )
-        Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="greater")) 
-        Res
-        } 
+          if ( inmethod_203() =="Fisher"){
+            data=filedata() %>% group_by(CONC,TIME) %>%
+              summarize(TOTAL=sum(TOTAL),DEAD=sum(DEAD)) %>% ungroup
+            TOTAL_24 <- data %>% dplyr::filter(TIME=="24" & CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
+            TOTAL_48 <- data %>% dplyr::filter(TIME=="48" & CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
+            TOTAL_72 <- data %>% dplyr::filter(TIME=="72" & CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
+            TOTAL_96 <- data %>% dplyr::filter(TIME=="96" & CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
+            DEAD_24 <- data %>% dplyr::filter(TIME=="24" & CONC=="0") %>% dplyr::select(DEAD) %>% as.numeric()
+            DEAD_48 <- data %>% dplyr::filter(TIME=="48" & CONC=="0") %>% dplyr::select(DEAD) %>% as.numeric()
+            DEAD_72 <- data %>% dplyr::filter(TIME=="72" & CONC=="0") %>% dplyr::select(DEAD) %>% as.numeric()
+            DEAD_96 <- data %>% dplyr::filter(TIME=="96" & CONC=="0") %>% dplyr::select(DEAD) %>% as.numeric()
+            data_24 <- data %>% mutate(TOTAL_ctrl = TOTAL_24, DEAD_ctrl =DEAD_24) %>%
+              dplyr::filter(CONC!="0" & TIME=="24")
+            data_48 <- data %>% mutate(TOTAL_ctrl = TOTAL_48, DEAD_ctrl =DEAD_48) %>%
+              dplyr::filter(CONC!="0" & TIME=="48")
+            data_72 <- data %>% mutate(TOTAL_ctrl = TOTAL_72, DEAD_ctrl =DEAD_72) %>%
+              dplyr::filter(CONC!="0" & TIME=="72")
+            data_96 <- data %>% mutate(TOTAL_ctrl = TOTAL_96, DEAD_ctrl =DEAD_96) %>%
+              dplyr::filter(CONC!="0" & TIME=="96")
+            fisher <- function(a,b,c,d){
+              dt <- matrix(c(a,b,c,d),ncol=2)
+              c(pvalue = fisher.test(dt)$p.value) 
+            }
+            Res1 <- data_24 %>%
+              rowwise()%>%
+              mutate(pvalue = fisher(DEAD,TOTAL-DEAD, DEAD_ctrl,TOTAL_ctrl-DEAD_ctrl)) %>% ungroup() %>%
+              mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
+              mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))
+            Res2 <- data_48 %>%
+              rowwise()%>%
+              mutate(pvalue = fisher(DEAD,TOTAL-DEAD, DEAD_ctrl,TOTAL_ctrl-DEAD_ctrl)) %>% ungroup() %>%
+              mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
+              mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))    
+            Res3 <- data_72 %>%
+              rowwise()%>%
+              mutate(pvalue = fisher(DEAD,TOTAL-DEAD, DEAD_ctrl,TOTAL_ctrl-DEAD_ctrl)) %>% ungroup() %>%
+              mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
+              mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))    
+            Res4 <- data_96 %>%
+              rowwise()%>%
+              mutate(pvalue = fisher(DEAD,TOTAL-DEAD, DEAD_ctrl,TOTAL_ctrl-DEAD_ctrl)) %>% ungroup() %>%
+              mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
+              mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))    
+            list("24 h" = Res1,"48 h" = Res2,"72 h" = Res3, "96 h" = Res4 )
+            }
       else if(intest_type() == 'TG235'){
           data=filedata()
           data$CONC <- as.factor(data$CONC)

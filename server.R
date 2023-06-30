@@ -314,6 +314,7 @@ server <- function(input, output, session) {
               mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))    
             list("24 h" = Res1,"48 h" = Res2,"72 h" = Res3, "96 h" = Res4 )
             }
+        }
       else if(intest_type() == 'TG235'){
           data=filedata()
           data$CONC <- as.factor(data$CONC)

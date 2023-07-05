@@ -102,7 +102,13 @@ knitr::kable( round(ECx(),2) )
     }
 ```
 
-## 4. Session Info
+## 4. hypothesis testing
+```{r hypothesis_testing,echo=FALSE}
+TestResult()
+```
+
+
+## 5. Session Info
 ```{r sessionInfo}
 sessionInfo()
 ```

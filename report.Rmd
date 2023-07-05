@@ -50,7 +50,6 @@ if(input$test_type == 'TG201'){
     }
 }
 print("")
-tagList(fitmodel())
 print(ECx())
 ```
 

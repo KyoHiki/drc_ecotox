@@ -50,6 +50,7 @@ if(input$test_type == 'TG201'){
     }
 }
 cat("\n\n")
+print(" ")
 print(ECx())
 ```
 

@@ -7,7 +7,6 @@ library(here)
 library(rmarkdown)
 library(shinyjs)
 library(shinycssloaders)
-library(htmltools)
 
 ui <- fluidPage(
   useShinyjs(),

@@ -207,7 +207,7 @@ progress::-moz-progress-bar {
                                                      "Steel's test" = 'Steel',
                                                      "Fisher's exact test with BH correction" = 'Fisher'),
                                          selected = 'Dunnett'),
-                            h5("You can see the bartlett's test result for variance test, and then select testing method.")
+                            h5("You can see the bartlett's test result for homogenity of variance, and then select testing method.")
                             ),
 
                           

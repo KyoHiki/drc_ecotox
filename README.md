@@ -4,18 +4,22 @@
 
     
 # How to use
-Load the Shiny R package in your R session and perform the following command:
+Install and load the Shiny and other R packages in your R session and perform the following command:
 ```r
+# If necessary, install the following packages.
+install.packages("shiny)
+install.packages("drc")
+install.packages("knitr")
+install.packages("multcomp")
+install.packages("ggplot2")
+install.packages("tidyverse")
+install.packages("rmarkdown")
+install.packages("here")
+install.packages("shinyjs")
+install.packages("shinycssloaders")
+
+# If you have already installed packages, please enter the following command.
 library(shiny)
-library(drc)
-library(knitr)
-library(multcomp)
-library(ggplot2)
-library(tidyverse)
-library(rmarkdown)
-library(here)
-library(shinyjs)
-library(shinycssloaders)
 runGitHub("KyoHiki/drc_ecotox")
 ```
 

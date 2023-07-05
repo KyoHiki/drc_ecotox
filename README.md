@@ -16,6 +16,7 @@ library(rmarkdown)
 library(here)
 library(shinyjs)
 library(shinycssloaders)
+library(htmltools)
 runGitHub("KyoHiki/drc_ecotox")
 ```
 

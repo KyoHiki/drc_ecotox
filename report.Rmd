@@ -49,7 +49,7 @@ if(input$test_type == 'TG201'){
     writeLens("Selected model: Log-logistic 4 parameters \n")
     }
 }
-print(kable(ECx()) )
+print(knitr::kable(ECx()) )
 ```
 
 ## 3. Dose-response plot

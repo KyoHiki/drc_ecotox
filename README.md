@@ -7,7 +7,7 @@
 Install and load the Shiny and other R packages in your R session and perform the following command:
 ```r
 # If necessary, install the following packages.
-install.packages("shiny)
+install.packages("shiny")
 install.packages("drc")
 install.packages("knitr")
 install.packages("multcomp")

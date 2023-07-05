@@ -5,7 +5,7 @@ output: word_document
 ---
 
 ## 0. Test type
-```{r ,echo=FALSE, include=FALSE}
+```{r ,echo=FALSE}
 if(input$test_type == 'TG201'){
   print("Test No. 201: Freshwater Alga and Cyanobacteria, Growth Inhibition Test")
 }else if(input$test_type == 'TG202') {
@@ -22,9 +22,6 @@ if(input$test_type == 'TG201'){
 
 ## 1. Summary of input data
 ```{r data, collapse=TRUE, echo=FALSE}
-# Check the first six rows of input data
-head( filedata() )
-
 # Check mean and sd at each concentration
 if(input$test_type == 'TG202' | input$test_type == 'TG235'){
   filedata()
@@ -34,8 +31,6 @@ if(input$test_type == 'TG202' | input$test_type == 'TG235'){
   summarize_at(vars(-BEAKER),.funs= c(mean,sd)) %>%
   rename(TOTAL_mean = TOTAL_fn1, TOTAL_sd =TOTAL_fn2, IMMOBILIZED_mean = IMMOBILIZED_fn1, IMMOBILIZED_sd = IMMOBILIZED_fn2)
 }
-
-
 ```
 
 ## 4. Session Info

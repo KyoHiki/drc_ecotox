@@ -34,7 +34,7 @@ if(input$test_type == 'TG202' | input$test_type == 'TG235'){
 ```
 
 ## 2. Fitting the selected model 
-```{r data, collapse=TRUE, echo=FALSE}
+```{r model, collapse=TRUE, echo=FALSE}
 # show the selected model
 if(input$test_type == 'TG201'){
   if(input$model_TG201 =='ll2'){

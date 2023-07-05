@@ -38,19 +38,17 @@ if(input$test_type == 'TG202' | input$test_type == 'TG235'){
 # show the selected model
 if(input$test_type == 'TG201'){
   if(input$model_TG201 =='ll2'){
-  print("Selected model: Log-logistic 2 parameters")
+  writeLens("Selected model: Log-logistic 2 parameters \n")
   } else if (input$model_TG201 =='ll4'){
-    print("Selected model: Log-logistic 4 parameters")
+    writeLens("Selected model: Log-logistic 4 parameters \n")
     }
 } else if(input$test_type == 'TG235'){
   if(input$model_TG235 =='ll2'){
-  print("Selected model: Log-logistic 2 parameters")
+  writeLines("Selected model: Log-logistic 2 parameters \n")
   } else if (input$model_TG235 =='ll4'){
-    print("Selected model: Log-logistic 4 parameters")
+    writeLens("Selected model: Log-logistic 4 parameters \n")
     }
 }
-cat("\n\n")
-print(" ")
 print(ECx())
 ```
 

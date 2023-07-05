@@ -125,18 +125,18 @@ server <- function(input, output, session) {
   ECx <- eventReactive(input$buttonRunStep1,{
     if(intest_type() == 'TG201') {
       XX <- input$ecx_TG201
-      drc_df <- data.frame(ED(fitmodel(), c(XX),interval = "delta",display=FALSE))
-      colnames(drc_df) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      drc_df <- data.frame(ED(fitmodel(), c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fitmodel())[[1]] )
+      colnames(drc_df) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
       }
     else if(intest_type() == 'TG202') {
       fit <- fitmodel()
       fit1 <- fit$fit1
       fit2 <- fit$fit2
       XX <- input$ecx_TG202
-      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE)) 
-      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE))
-      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
-      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fit1)[[1]]) 
+      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fit2)[[1]])
+      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
       drc_df <- rbind(drc_df1,drc_df2)
       rownames(drc_df) <- c('24 h','48 h')
       }
@@ -147,14 +147,14 @@ server <- function(input, output, session) {
       fit3 <- fit$fit3
       fit4 <- fit$fit4
       XX <- input$ecx_TG203
-      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE)) 
-      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE))
-      drc_df3 <- data.frame(ED(fit3, c(XX),interval = "delta",display=FALSE)) 
-      drc_df4 <- data.frame(ED(fit4, c(XX),interval = "delta",display=FALSE))
-      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
-      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
-      colnames(drc_df3) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
-      colnames(drc_df4) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE),"Slope"=coefficients(fit1)[[1]]) 
+      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE),"Slope"=coefficients(fit2)[[1]])
+      drc_df3 <- data.frame(ED(fit3, c(XX),interval = "delta",display=FALSE),"Slope"=coefficients(fit3)[[1]]) 
+      drc_df4 <- data.frame(ED(fit4, c(XX),interval = "delta",display=FALSE),"Slope"=coefficients(fit4)[[1]])
+      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      colnames(drc_df3) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      colnames(drc_df4) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI',''Slope)
       drc_df <- rbind(drc_df1,drc_df2, drc_df3, drc_df4)
       rownames(drc_df) <- c('24 h','48 h','72 h','96 h')
     }
@@ -164,12 +164,12 @@ server <- function(input, output, session) {
       fit2 <- fit$fit2
       fit3 <- fit$fit3
       XX <- input$ecx_TG218
-      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE)) 
-      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE))
-      drc_df3 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE))
-      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
-      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
-      colnames(drc_df3) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fit1)[[1]]) 
+      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fit2)[[1]])
+      drc_df3 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fit3)[[1]])
+      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      colnames(drc_df3) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
       drc_df <- rbind(drc_df1,drc_df2,drc_df3)
       rownames(drc_df) <- c('Mortality','Emergence ratio',"Development rate")
     }
@@ -178,10 +178,10 @@ server <- function(input, output, session) {
       fit1 <- fit$fit1
       fit2 <- fit$fit2
       XX <- input$ecx_TG235
-      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE)) 
-      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE))
-      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
-      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI')
+      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fit1)[[1]]) 
+      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fit2)[[1]])
+      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
       drc_df <- rbind(drc_df1,drc_df2)
       rownames(drc_df) <- c('24 h','48 h')
     }

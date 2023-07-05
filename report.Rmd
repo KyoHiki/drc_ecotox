@@ -59,8 +59,7 @@ print(ECx())
       par(mar=c(5,9,2,2))
       plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="",
              cex=2,cex.axis =2, cex.lab=2)
-      }
-    else if(input$test_type == 'TG202') {
+      } else if(input$test_type == 'TG202') {
       fit <- fitmodel()
       fit1 <- fit$fit1
       fit2 <- fit$fit2
@@ -71,8 +70,7 @@ print(ECx())
       plot(fit2, log="x", broken=TRUE, xlab="", ylab="", main="",
            ylim=c(0,1), col="#D55E00",cex=2,cex.axis =2, cex.lab=2)
       legend("topleft",inset=0.05, legend = c("24 h","48 h"), col = c("black","#D55E00"), lty = c("dotted","solid"),cex=2)
-    }
-    else if(input$test_type == 'TG203') {
+    } else if(input$test_type == 'TG203') {
       fit <- fitmodel()
       fit1 <- fit$fit1
       fit2 <- fit$fit2
@@ -91,8 +89,7 @@ print(ECx())
       plot(fit4, log="x", broken=TRUE, xlab="", ylab="", main="",
            ylim=c(0,1), col="black",cex=2,cex.axis =2, cex.lab=2)
       legend("topleft",inset=0.05, legend = c("24 h","48 h","72 h","96 h"), col = c("black","#D55E00","tomato","black"), lty = c("dotted","solid","dotted","solid"),cex=2)
-    }
-    else if(input$test_type == 'TG235') {
+    } else if(input$test_type == 'TG235') {
       fit <- fitmodel()
       fit1 <- fit$fit1
       fit2 <- fit$fit2

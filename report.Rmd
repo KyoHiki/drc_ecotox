@@ -49,7 +49,7 @@ if(input$test_type == 'TG201'){
     print("Selected model: Log-logistic 4 parameters")
     }
 }
-<br/>
+cat("\n")
 print(ECx())
 ```
 

@@ -40,13 +40,13 @@ if(input$test_type == 'TG201'){
   if(input$model_TG201 =='ll2'){
   print("Selected model: Log-logistic 2 parameters")
   } else if (input$model_TG201 =='ll4'){
-    print("Selected model: Log-logistic 2 parameters")
+    print("Selected model: Log-logistic 4 parameters")
     }
 } else if(input$test_type == 'TG235'){
   if(input$model_TG235 =='ll2'){
   print("Selected model: Log-logistic 2 parameters")
   } else if (input$model_TG235 =='ll4'){
-    print("Selected model: Log-logistic 2 parameters")
+    print("Selected model: Log-logistic 4 parameters")
     }
 }
 

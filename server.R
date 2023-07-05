@@ -318,15 +318,16 @@ server <- function(input, output, session) {
       else if(intest_type() == 'TG235'){
           data=filedata()
           data$CONC <- as.factor(data$CONC)
+          Res_variance <- bartlett.test(IMMOBILIZED~CONC, data=data)
           if( inmethod_235() =="Dunnett"){
-            fit1 <- glm( cbind(IMMOBILIZED,TOTAL-IMMOBILIZED) ~ CONC, data = data %>% dplyr::filter(TIME=="24"),
-                       weights=TOTAL, family=binomial(link="logit")  )
+            fit1 <- aov( IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="24")  )
             Res1 <- summary (glht (fit1, linfct=mcp (CONC="Dunnett"), alternative="greater")) 
-            fit2 <- glm( cbind(IMMOBILIZED,TOTAL-IMMOBILIZED) ~ CONC, data = data %>% dplyr::filter(TIME=="48"),
-                       weights=TOTAL, family=binomial(link="logit")  )
+            fit2 <- aov( IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="48")  )
             Res2 <- summary (glht (fit2, linfct=mcp (CONC="Dunnett"), alternative="greater"))
-            list("24 h" = Res1,"48 h" = Res2)
+            list("Bartlett test" = Res_variance, "24 h" = Res1,"48 h" = Res2)
             } 
+          else if ( inmethod_235() =="Steel"){
+            }
           else if ( inmethod_235() =="Fisher"){
             data=filedata() %>% group_by(CONC,TIME) %>%
               summarize(TOTAL=sum(TOTAL),IMMOBILIZED=sum(IMMOBILIZED)) %>% ungroup
@@ -352,7 +353,7 @@ server <- function(input, output, session) {
               mutate(pvalue = fisher(IMMOBILIZED,TOTAL-IMMOBILIZED, IMMOBILIZED_ctrl,TOTAL_ctrl-IMMOBILIZED_ctrl)) %>% ungroup() %>%
               mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
               mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))    
-            list("24 h" = Res1,"48 h" = Res2)
+            list("Bartlett test" = Res_variance, "24 h" = Res1,"48 h" = Res2)
             }
           }
       })

@@ -204,8 +204,10 @@ progress::-moz-progress-bar {
                             radioButtons('test_method_TG235',
                                          'Select hypothesis testing method',
                                          choices = c("Dunnett's test" = 'Dunnett',
+                                                     "Steel's test" = 'Steel',
                                                      "Fisher's exact test with BH correction" = 'Fisher'),
-                                         selected = 'Dunnett')
+                                         selected = 'Dunnett'),
+                            h5("You can see the bartlett's test result for variance test, and then select testing method.")
                             ),
 
                           

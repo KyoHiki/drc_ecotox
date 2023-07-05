@@ -464,8 +464,8 @@ steel.test.formula <-
             list("Bartlett test" = Res_variance, "Dunnett's test for 24 h" = Res1,"Dunnett's test for 48 h" = Res2)
             } 
           else if ( inmethod_235() =="Steel"){
-            Res1 <- steel.test(IMMOBILITY ~ CONC, data = data %>% dplyr::filter(TIME=="24"), control = "0",alternative="greater")
-            Res2 <- steel.test(IMMOBILITY ~ CONC, data = data %>% dplyr::filter(TIME=="48"), control = "0",alternative="greater")
+            Res1 <- steel.test(IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="24"), control = "0",alternative="greater")
+            Res2 <- steel.test(IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="48"), control = "0",alternative="greater")
             list("Bartlett test" = Res_variance, "Steel's test for 24 h" = Res1,"Steel's test for 48 h" = Res2)
             }
           else if ( inmethod_235() =="Fisher"){

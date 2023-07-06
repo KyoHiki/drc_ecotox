@@ -62,6 +62,7 @@ progress::-moz-progress-bar {
                                         br(),
                                         p(strong("Note")),
                                         p("Please be aware that this application is currently in beta testing. As such, modifications and updates may occur without prior notification."),
+                                        p("本アプリは未だベータ版であり、予告なく修正・アップデートすることをご留意ください。"),
                                         br(),
                                         p(strong("Contact")),
                                         p("We welcome your feedback and suggestions as we continue to improve and refine this application: ", strong("referencelab.risk@nies.go.jp"), ".")

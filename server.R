@@ -572,13 +572,28 @@ steel.test.formula <-
           if( inmethod_218_mortality() =="CA"){
             
             } else if ( inmethod_218_mortality() =="Fisher"){
-
+              data=filedata() %>% group_by(CONC) %>%
+                summarize(TOTAL=sum(TOTAL),DEAD=sum(DEAD)) %>% ungroup
+              TOTAL <- data %>% dplyr::select(TOTAL) %>% as.numeric()
+              DEAD_ctrl <- data %>% dplyr::filter(CONC=="0") %>% dplyr::select(DEAD) %>% as.numeric()
+              data_ <- data %>% mutate(TOTAL_ctrl = TOTAL, DEAD_ctrl =DEAD_ctrl) %>%  dplyr::filter(CONC!="0")
+              ## Fisher's exact test                  
+              fisher <- function(a,b,c,d){
+                dt <- matrix(c(a,b,c,d),ncol=2)
+                c(pvalue = fisher.test(dt)$p.value) 
+              }
+              Res <- data_24 %>%
+                rowwise()%>%
+                mutate(pvalue = fisher(DEAD,TOTAL-DEAD, DEAD_ctrl,TOTAL_ctrl-DEAD_ctrl)) %>% ungroup() %>%
+                mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
+                mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))
+              list("Fisher's exact test" = knitr::kable(Res) )
           }
           if ( inmethod_218_emergence() =="CA"){
             
             } else if ( inmethod_218_emergence() =="Fisher"){
-              data=filedata() %>% group_by(CONC,TIME) %>%
-              summarize(TOTAL=sum(TOTAL),IMMOBILIZED=sum(IMMOBILIZED)) %>% ungroup
+              data=filedata() %>% group_by(CONC) %>%
+                summarize(TOTAL=sum(TOTAL),EMERGED=sum(EMERGED)) %>% ungroup
               TOTAL <- data %>% dplyr::select(TOTAL) %>% as.numeric()
               EMER_ctrl <- data %>% dplyr::filter(CONC=="0") %>% dplyr::select(EMERGED) %>% as.numeric()
               data_ <- data %>% mutate(TOTAL_ctrl = TOTAL, EMER_ctrl =EMER_ctrl) %>%  dplyr::filter(CONC!="0")
@@ -587,7 +602,7 @@ steel.test.formula <-
                 dt <- matrix(c(a,b,c,d),ncol=2)
                 c(pvalue = fisher.test(dt)$p.value) 
               }
-              Res1 <- data_24 %>%
+              Res <- data_24 %>%
                 rowwise()%>%
                 mutate(pvalue = fisher(EMERGED,TOTAL-EMERGED, EMER_ctrl,TOTAL_ctrl-EMER_ctrl)) %>% ungroup() %>%
                 mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%

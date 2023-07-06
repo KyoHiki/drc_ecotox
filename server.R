@@ -574,7 +574,7 @@ steel.test.formula <-
             } else if ( inmethod_218_mortality() =="Fisher"){
               data=filedata() %>% group_by(CONC) %>%
                 summarize(TOTAL=sum(TOTAL),DEAD=sum(DEAD)) %>% ungroup
-              TOTAL <- data %>% dplyr::select(TOTAL) %>% as.numeric()
+              TOTAL <- data  %>% dplyr::filter(CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
               DEAD_ctrl <- data %>% dplyr::filter(CONC=="0") %>% dplyr::select(DEAD) %>% as.numeric()
               data2 <- data %>% mutate(TOTAL_ctrl = TOTAL, DEAD_ctrl =DEAD_ctrl) %>%  dplyr::filter(CONC!="0")
               ## Fisher's exact test                  
@@ -594,7 +594,7 @@ steel.test.formula <-
             } else if ( inmethod_218_emergence() =="Fisher"){
               data=filedata() %>% group_by(CONC) %>%
                 summarize(TOTAL=sum(TOTAL),EMERGED=sum(EMERGED)) %>% ungroup
-              TOTAL <- data %>% dplyr::select(TOTAL) %>% as.numeric()
+              TOTAL <- data  %>% dplyr::filter(CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
               EMER_ctrl <- data %>% dplyr::filter(CONC=="0") %>% dplyr::select(EMERGED) %>% as.numeric()
               data2 <- data %>% mutate(TOTAL_ctrl = TOTAL, EMER_ctrl =EMER_ctrl) %>%  dplyr::filter(CONC!="0")
               ## Fisher's exact test                  

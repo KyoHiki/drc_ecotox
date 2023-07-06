@@ -336,7 +336,7 @@ server <- function(input, output, session) {
       fit1 <- fit$fit1
       fit2 <- fit$fit2
       fit3 <- fit$fit3
-      par(mar=c(5,5,2,2), mfrow=c(3,1))
+      par(mar=c(5,5,2,2), mfrow=c(3,1),mgp=c(2.5, 0.7, 0))
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality",
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
       plot(fit2, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Emergence ratio",

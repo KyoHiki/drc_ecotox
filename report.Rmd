@@ -35,7 +35,7 @@ if(input$test_type == 'TG202' | input$test_type == 'TG235'){
   group_by(CONC) %>% 
   summarize_at(vars(-BEAKER),.funs= c(mean,sd)) %>%
   rename(TOTAL_mean = TOTAL_fn1, TOTAL_sd =TOTAL_fn2, DEAD_mean = DEAD_fn1, DEAD_sd = DEAD_fn2, EMRGED_mean = EMRGED_fn1, EMRGED_sd = EMRGED_fn2,  DEVELOPMENT_mean = DEVELOPMENT_fn1, DEVELOPMENT_sd = DEVELOPMENT_fn2 ) %>%
-knitr::kable
+knitr::kable()
 }
 ```
 

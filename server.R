@@ -605,7 +605,7 @@ steel.test.formula <-
 　　　　　　　　　　 Res1[i,4]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$statistic
                    Res1[i,5]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$p.value
                   　}
-                colnames(Res1) <-c("CONC","TOTAL","EMERGED","Chi_squared","pvalue")
+                colnames(Res2) <-c("CONC","TOTAL","EMERGED","Chi_squared","pvalue")
                 Res2 <- Res2 %>%
                   mutate(Asterisk=  ifelse(pvalue<0.05,ifelse(pvalue>0.01,"*","**"),"" )) 
             } else if ( inmethod_218_emergence() =="Fisher"){

@@ -599,13 +599,13 @@ steel.test.formula <-
             Res1 <- data_24 %>%
               rowwise()%>%
               mutate(pvalue = fisher(IMMOBILIZED,TOTAL-IMMOBILIZED, IMMOBILIZED_ctrl,TOTAL_ctrl-IMMOBILIZED_ctrl)) %>% ungroup() %>%
-              rename(IMMOB =IMMOBILIZED, IMMOB_ctrl = IMMOBILIZED_ctrl, 'TOTAL_ctrl-IMMOB_ctrl' = "TOTAL_ctrl-IMMOBILIZED_ctrl") %>%
+              rename(IMMOB =IMMOBILIZED, 'TOTAL-IMMOB'="TOTAL-IMMOBILIZED",IMMOB_ctrl = IMMOBILIZED_ctrl, 'TOTAL_ctrl-IMMOB_ctrl' = "TOTAL_ctrl-IMMOBILIZED_ctrl") %>%
               mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
               mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))
             Res2 <- data_48 %>%
               rowwise()%>%
               mutate(pvalue = fisher(IMMOBILIZED,TOTAL-IMMOBILIZED, IMMOBILIZED_ctrl,TOTAL_ctrl-IMMOBILIZED_ctrl)) %>% ungroup() %>%
-              rename(IMMOB =IMMOBILIZED, IMMOB_ctrl = IMMOBILIZED_ctrl, 'TOTAL_ctrl-IMMOB_ctrl' = "TOTAL_ctrl-IMMOBILIZED_ctrl") %>%
+              rename(IMMOB =IMMOBILIZED, 'TOTAL-IMMOB'="TOTAL-IMMOBILIZED",IMMOB_ctrl = IMMOBILIZED_ctrl, 'TOTAL_ctrl-IMMOB_ctrl' = "TOTAL_ctrl-IMMOBILIZED_ctrl") %>%
               mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
               mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))    
             list("Fisher's exact test for 24 h" = knitr::kable(Res1),"Fisher's exact test for 48 h" = knitr::kable(Res2))

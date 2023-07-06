@@ -619,8 +619,8 @@ steel.test.formula <-
             Res3 <- steel.test(DEVELOPMENT ~ CONC, data = data_raw, control = "0",alternative="less") %>%
                mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))        
           }
-      list("Bartlett's test for development rate (DR)" = Res_variance, "Mortality" = knitr::kable(Res1),
-           "Emergence ratio" = knitr::kable(Res2), "Development rate" = Res3 )
+      list("Mortality" = knitr::kable(Res1), "Emergence ratio" = knitr::kable(Res2), 
+           "Development rate" = Res3, "Bartlett's test for development rate (DR)" = Res_variance )
       }
       else if(intest_type() == 'TG235'){
           data=filedata()

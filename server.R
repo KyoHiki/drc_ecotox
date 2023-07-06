@@ -602,8 +602,8 @@ steel.test.formula <-
                 Res2 <- data.frame(CONC = data_CA$CONC, TOTAL=data_CA$TOTAL, EMERGED=data_CA$EMERGED)
                 LENGTH <- nrow(data_CA)
           　　  for (i in 3:LENGTH){ 
-　　　　　　　　　　 Res1[i,4]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$statistic
-                   Res1[i,5]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$p.value
+　　　　　　　　　　 Res2[i,4]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$statistic
+                   Res2[i,5]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$p.value
                   　}
                 colnames(Res2) <-c("CONC","TOTAL","EMERGED","Chi_squared","pvalue")
                 Res2 <- Res2 %>%

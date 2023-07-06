@@ -188,10 +188,9 @@ progress::-moz-progress-bar {
                                          selected = 'll2'),
                             radioButtons('model_TG218_development',
                                          'Select fitting model for development rate',
-                                         choices = c('log-logistic 2 parameters' = 'll2',
-                                                     'log-logistic 3 parameters' = 'll3',
+                                         choices = c('log-logistic 3 parameters' = 'll3',
                                                      'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll2'),
+                                         selected = 'll3'),
                             br(),
                             numericInput(inputId="ecx_TG218",label="Determine effect concentration X%",value=50,min=0,max=100)
                             ),

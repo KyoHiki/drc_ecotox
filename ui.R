@@ -222,11 +222,9 @@ progress::-moz-progress-bar {
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
                             radioButtons('test_method_TG235',
                                          'Select hypothesis testing method',
-                                         choices = c("Dunnett's test" = 'Dunnett',
-                                                     "Steel's test" = 'Steel',
-                                                     "Fisher's exact test with BH correction" = 'Fisher'),
-                                         selected = 'Dunnett'),
-                            h5("You can see the bartlett's test result for homogenity of variance, and then select testing method.")
+                                         choices = c("Fisher's exact test with BH correction" = 'Fisher'),
+                                         selected = 'Fisher'),
+                       #    h5("You can see the bartlett's test result for homogenity of variance, and then select testing method.")
                             ),
 
                           

@@ -630,7 +630,7 @@ steel.test.formula <-
             data_raw$CONC <- as.factor(data_raw$CONC)
             fit <- aov( DEVELOPMENT ~ CONC, data = data_raw  )
             Res3 <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
-            list("Bartlett's test for development rate (DR)" = Res_variance, "Dunnett's test for DR" = Res)
+            list("Bartlett's test for development rate (DR)" = Res_variance, "Dunnett's test for DR" = Res3)
             } else if ( inmethod_218_development() =="Steel"){
             data_raw=filedata()
             data_raw$CONC <- as.factor(data_raw$CONC)

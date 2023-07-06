@@ -581,11 +581,11 @@ steel.test.formula <-
                 Res1 <- Res1 %>%
                   mutate(Asterisk=  ifelse(pvalue<0.05,ifelse(pvalue>0.01,"*","**"),"" )) 
             } else if ( inmethod_218_mortality() =="Fisher"){
-              data=filedata() %>% group_by(CONC) %>%
+              data_F =filedata() %>% group_by(CONC) %>%
                 summarize(TOTAL=sum(TOTAL),DEAD=sum(DEAD)) %>% ungroup
-              TOTAL <- data  %>% dplyr::filter(CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
-              DEAD_ctrl <- data %>% dplyr::filter(CONC=="0") %>% dplyr::select(DEAD) %>% as.numeric()
-              data2 <- data %>% mutate(TOTAL_ctrl = TOTAL, DEAD_ctrl =DEAD_ctrl) %>%  dplyr::filter(CONC!="0")
+              TOTAL <- data_F  %>% dplyr::filter(CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
+              DEAD_ctrl <- data_F %>% dplyr::filter(CONC=="0") %>% dplyr::select(DEAD) %>% as.numeric()
+              data2 <- data_F %>% mutate(TOTAL_ctrl = TOTAL, DEAD_ctrl =DEAD_ctrl) %>%  dplyr::filter(CONC!="0")
               ## Fisher's exact test                  
               fisher <- function(a,b,c,d){
                 dt <- matrix(c(a,b,c,d),ncol=2)
@@ -609,17 +609,17 @@ steel.test.formula <-
                 Res2 <- Res2 %>%
                   mutate(Asterisk=  ifelse(pvalue<0.05,ifelse(pvalue>0.01,"*","**"),"" )) 
             } else if ( inmethod_218_emergence() =="Fisher"){
-              data=filedata() %>% group_by(CONC) %>%
+              data_F_emer =filedata() %>% group_by(CONC) %>%
                 summarize(TOTAL=sum(TOTAL),EMERGED=sum(EMERGED)) %>% ungroup
-              TOTAL <- data  %>% dplyr::filter(CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
+              TOTAL <- data_F_emer  %>% dplyr::filter(CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
               EMER_ctrl <- data %>% dplyr::filter(CONC=="0") %>% dplyr::select(EMERGED) %>% as.numeric()
-              data2 <- data %>% mutate(TOTAL_ctrl = TOTAL, EMER_ctrl =EMER_ctrl) %>%  dplyr::filter(CONC!="0")
+              data2_emer <- data_F_emer %>% mutate(TOTAL_ctrl = TOTAL, EMER_ctrl =EMER_ctrl) %>%  dplyr::filter(CONC!="0")
               ## Fisher's exact test                  
               fisher <- function(a,b,c,d){
                 dt <- matrix(c(a,b,c,d),ncol=2)
                 c(pvalue = fisher.test(dt)$p.value) 
               }
-              Res2 <- data2 %>%
+              Res2 <- data2_emer %>%
                 rowwise()%>%
                 mutate(pvalue = fisher(EMERGED,TOTAL-EMERGED, EMER_ctrl,TOTAL_ctrl-EMER_ctrl)) %>% ungroup() %>%
                 mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%

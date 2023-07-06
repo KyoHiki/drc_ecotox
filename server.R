@@ -514,7 +514,7 @@ steel.test.formula <-
         data$CONC <- as.factor(data$CONC)
         fit <- lm( H72 ~ CONC, data = data )
         Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
-        Res
+        knitr::kable(round(Res,2))
         } 
       else if(intest_type() == "TG203") {
           if ( inmethod_203() =="Fisher"){
@@ -560,7 +560,7 @@ steel.test.formula <-
               mutate(pvalue = fisher(DEAD,TOTAL-DEAD, DEAD_ctrl,TOTAL_ctrl-DEAD_ctrl)) %>% ungroup() %>%
               mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
               mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))    
-            list("24 h" = Res1,"48 h" = Res2,"72 h" = Res3, "96 h" = Res4 )
+            list("24 h" = knitr::kable(round(Res1,2)), "48 h" = knitr::kable(round(Res2,2)),"72 h" = knitr::kable(round(Res3,2)), "96 h" = knitr::kable(round(Res4,2)) )
             }
         }
       else if(intest_type() == 'TG235'){
@@ -606,7 +606,7 @@ steel.test.formula <-
               mutate(pvalue = fisher(IMMOBILIZED,TOTAL-IMMOBILIZED, IMMOBILIZED_ctrl,TOTAL_ctrl-IMMOBILIZED_ctrl)) %>% ungroup() %>%
               mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
               mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))    
-            list("Fisher's exact test for 24 h" = Res1,"Fisher's exact test for 48 h" = Res2)
+            list("Fisher's exact test for 24 h" = knitr::kable(round(Res1,2)),"Fisher's exact test for 48 h" = knitr::kable(round(Res2,2)))
             }
           }
       })

@@ -610,15 +610,15 @@ steel.test.formula <-
               list("Fisher's exact test" = knitr::kable(Res) )
           }
           if ( inmethod_218_development() =="Dunnett"){
-            data=filedata()
-            data$CONC <- as.factor(data$CONC)
-            fit <- aov( DEVELOPMENT ~ CONC, data = data  )
+            data_raw=filedata()
+            data_raw$CONC <- as.factor(data_raw$CONC)
+            fit <- aov( DEVELOPMENT ~ CONC, data = data_raw  )
             Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
             list("Bartlett's test for development rate (DR)" = Res_variance, "Dunnett's test for DR" = Res)
             } else if ( inmethod_218_development() =="Steel"){
-            data=filedata()
-            data$CONC <- as.factor(data$CONC)
-            Res <- steel.test(DEVELOPMENT ~ CONC, data = data, control = "0",alternative="less") %>%
+            data_raw=filedata()
+            data_raw$CONC <- as.factor(data_raw$CONC)
+            Res <- steel.test(DEVELOPMENT ~ CONC, data = data_raw, control = "0",alternative="less") %>%
                mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))        
             list("Bartlett's test for development rate (DR)" = Res_variance, "Steel's test for DR" = knitr::kable(Res) )
           }

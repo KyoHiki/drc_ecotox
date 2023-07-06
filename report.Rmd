@@ -34,7 +34,8 @@ if(input$test_type == 'TG202' | input$test_type == 'TG235'){
   summary_data <- filedata() %>%
   group_by(CONC) %>% 
   summarize_at(vars(-BEAKER),.funs= c(mean,sd)) %>%
-  rename(TOTAL_mean = TOTAL_fn1, TOTAL_sd =TOTAL_fn2, DEAD_mean = DEAD_fn1, DEAD_sd = DEAD_fn2, EMERGED_mean = EMERGED_fn1, EMERGED_sd = EMERGED_fn2,  DEVELOPMENT_mean = DEVELOPMENT_fn1, DEVELOPMENT_sd = DEVELOPMENT_fn2 ) 
+  rename(TOTAL_mean = TOTAL_fn1, TOTAL_sd =TOTAL_fn2, DEAD_mean = DEAD_fn1, DEAD_sd = DEAD_fn2, EMERGED_mean = EMERGED_fn1, EMERGED_sd = EMERGED_fn2,  DEVELOPMENT_mean = DEVELOPMENT_fn1, DEVELOPMENT_sd = DEVELOPMENT_fn2 ) %>%
+dplyr::select(CONC,	TOTAL_mean,	TOTAL_sd, DEAD_mean,DEAD_sd,EMERGED_mean,EMERGED_sd,DEVELOPMENT_mean,	DEVELOPMENT_sd)
   knitr::kable( round(summary_data,2) )
 }
 ```

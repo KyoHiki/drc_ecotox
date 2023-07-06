@@ -252,7 +252,22 @@ server <- function(input, output, session) {
            ylim=c(0,1), col="black",cex=2,cex.axis =2, cex.lab=2)
       legend("topleft",inset=0.05, legend = c("24 h","48 h","72 h","96 h"), col = c("black","#D55E00","tomato","black"), lty = c("dotted","solid","dotted","solid"),cex=2)
     }
-    else if(intest_type() == 'TG235') {
+      else if(intest_type() == 'TG218') {
+      fit <- fitmodel()
+      fit1 <- fit$fit1
+      fit2 <- fit$fit2
+      fit3 <- fit$fit3
+      par(mar=c(5,5,2,2))
+      plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality",
+           ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
+      par(new=FALSE)
+      plot(fit2, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Emergence ratio",
+           ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
+      par(new=FALSE)
+      plot(fit3, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Development rate",
+           lty="dotted",cex=2,cex.axis =2, cex.lab=2)
+    }
+      else if(intest_type() == 'TG235') {
       fit <- fitmodel()
       fit1 <- fit$fit1
       fit2 <- fit$fit2

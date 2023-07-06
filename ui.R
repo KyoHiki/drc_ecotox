@@ -61,7 +61,7 @@ progress::-moz-progress-bar {
                         fixedRow(column(10, offset = 1,
                                         br(),
                                         p(strong("Note")),
-                                        p("Please be aware that this application is currently in beta testing. As such, modifications and updates may occur without prior notification.")
+                                        p("Please be aware that this application is currently in beta testing. As such, modifications and updates may occur without prior notification."),
                                         br(),
                                         p(strong("Contact")),
                                         p("We welcome your feedback and suggestions as we continue to improve and refine this application: ", strong("referencelab.risk@nies.go.jp"), ".")

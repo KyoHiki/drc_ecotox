@@ -505,13 +505,6 @@ steel.test.formula <-
   }
                     
 
-
-  ## Fisher's exact test                  
-  fisher <- function(a,b,c,d){
-              dt <- matrix(c(a,b,c,d),ncol=2)
-              c(pvalue = fisher.test(dt)$p.value) 
-            }
-
     
 
     
@@ -598,6 +591,11 @@ steel.test.formula <-
               dplyr::filter(CONC!="0" & TIME=="24")
             data_48 <- data %>% mutate(TOTAL_ctrl = TOTAL_48, IMMOBILIZED_ctrl =IM_48) %>%
               dplyr::filter(CONC!="0" & TIME=="48")
+            ## Fisher's exact test                  
+            fisher <- function(a,b,c,d){
+              dt <- matrix(c(a,b,c,d),ncol=2)
+              c(pvalue = fisher.test(dt)$p.value) 
+            }
             Res1 <- data_24 %>%
               rowwise()%>%
               mutate(pvalue = fisher(IMMOBILIZED,TOTAL-IMMOBILIZED, IMMOBILIZED_ctrl,TOTAL_ctrl-IMMOBILIZED_ctrl)) %>% ungroup() %>%

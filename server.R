@@ -587,8 +587,7 @@ steel.test.formula <-
 #            Res2 <- steel.test(IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="48"), control = "0",alternative="greater") %>%
 #              mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))    
 #            list("Bartlett's test" = Res_variance, "Steel's test for 24 h" = Res1,"Steel's test for 48 h" = Res2)
-#            }
-          else if ( inmethod_235() =="Fisher"){
+          if ( inmethod_235() =="Fisher"){
             data=filedata() %>% group_by(CONC,TIME) %>%
               summarize(TOTAL=sum(TOTAL),IMMOBILIZED=sum(IMMOBILIZED)) %>% ungroup
             TOTAL_24 <- data %>% dplyr::filter(TIME=="24" & CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()

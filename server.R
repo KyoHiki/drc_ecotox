@@ -604,7 +604,7 @@ steel.test.formula <-
             Res2 <- data_48 %>%
               rowwise()%>%
               mutate(pvalue = fisher(IMMOBILIZED,TOTAL-IMMOBILIZED, IMMOBILIZED_ctrl,TOTAL_ctrl-IMMOBILIZED_ctrl)) %>% ungroup() %>%
-              mutate(p_adjusted_BH = p.adjust(pvalue,"holm")) %>%
+              mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
               mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))    
             list("Fisher's exact test for 24 h" = Res1,"Fisher's exact test for 48 h" = Res2)
             }

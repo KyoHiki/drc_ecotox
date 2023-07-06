@@ -137,32 +137,32 @@ server <- function(input, output, session) {
         }
           
         else if(inmodel_218_mortality() == 'll3' & inmodel_218_emergence() == 'll2' & inmodel_218_development() == 'll3' ) {
-          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3(), type="binomial")
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3u(), type="binomial")
           fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.2(), type="binomial") 
           fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.3(), type="continuous")
         }
         else if(inmodel_218_mortality() == 'll3' & inmodel_218_emergence() == 'll2' & inmodel_218_development() == 'll4' ) {
-          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3(), type="binomial")
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3u(), type="binomial")
           fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.2(), type="binomial") 
           fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.4(), type="continuous")
         }
         else if(inmodel_218_mortality() == 'll3' & inmodel_218_emergence() == 'll3' & inmodel_218_development() == 'll3' ) {
-          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3(), type="binomial")
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3u(), type="binomial")
           fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.3(), type="binomial") 
           fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.3(), type="continuous")
         }
         else if(inmodel_218_mortality() == 'll3' & inmodel_218_emergence() == 'll3' & inmodel_218_development() == 'll4' ) {
-          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3(), type="binomial")
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3u(), type="binomial")
           fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.3(), type="binomial") 
           fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.4(), type="continuous")
         }
         else if(inmodel_218_mortality() == 'll3' & inmodel_218_emergence() == 'll4' & inmodel_218_development() == 'll3' ) {
-          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3(), type="binomial")
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3u(), type="binomial")
           fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.4(), type="binomial") 
           fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.3(), type="continuous")
         }
         else if(inmodel_218_mortality() == 'll3' & inmodel_218_emergence() == 'll4' & inmodel_218_development() == 'll4' ) {
-          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3(), type="binomial")
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3u(), type="binomial")
           fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.4(), type="binomial") 
           fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.4(), type="continuous")
         }
@@ -206,8 +206,8 @@ server <- function(input, output, session) {
           fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.2(), type="binomial")        
         }
       else if(inmodel_235() == 'll3') {
-          fit1 <- drm( IMMOBILIZED/TOTAL~CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.3(), type="binomial")
-          fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3(), type="binomial") 
+          fit1 <- drm( IMMOBILIZED/TOTAL~CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.3u(), type="binomial")
+          fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3u(), type="binomial") 
         }
       else if(inmodel_235() == 'll4') {
           fit1 <- drm( IMMOBILIZED/TOTAL~CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.4(), type="binomial")

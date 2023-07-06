@@ -140,7 +140,7 @@ knitr::kable( round(ECx(),2) )
       fit2 <- fit$fit2
       fit3 <- fit$fit3
 #　　 par(mar=c(5,5,2,2), mfrow=c(3,1),mgp=c(3, 1, 0) )
-      knitr::opts_chunk$set(fig.width=5, fig.height=18) 
+      knitr::opts_chunk$set(fig.width=6, fig.height=19) 
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality",
            ylim=c(0,1),lty="dotted",cex=1.5,cex.axis =1.5, cex.lab=1.5)
       plot(fit2, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Emergence ratio",

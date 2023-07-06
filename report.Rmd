@@ -107,7 +107,7 @@ knitr::kable( round(ECx(),2) )
 if(input$test_type == 'TG201'){
 
 }else if(input$test_type == 'TG235'){
-print("Homogenity of variance was checked by Bartlett's test, which tests the null hypothesis that the variance at each concentration is the same.")
+print("Homogenity of variance is checked by Bartlett's test, which tests the null hypothesis that the variance at each concentration is the same.")
 print("If the null hypothesis is not rejected, NOEC can be estimated using Dunnett's test.")
 print("If the null hypothesis is rejected, NOEC can be estimated using Steel's test.")
 }

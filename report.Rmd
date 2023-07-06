@@ -49,9 +49,9 @@ if(input$test_type == 'TG201'){
   } else if (input$model_TG201 =='ll4'){
     print("Selected model: Log-logistic 4 parameters")
   }
-} else if(input$test_type == 'TG218') {  
-if(input$model_218_mortality == 'll2' & input$model_218_emergence == 'll2' & input$model_218_development == 'll3' ) {
-   print("Selected model: Log-logistic 2 parameters for mortality, log-logistic 2 parameters for emergence ratio, and log-logistic 3 parameters for development rate")
+} else if(input$test_type == 'TG218') { 
+if(input$model_218_mortality == 'll2' & input$model_218_emergence == 'll2' & input$model_218_development == 'll3' ) { 
+  print("Selected model: Log-logistic 2 parameters for mortality, log-logistic 2 parameters for emergence ratio, and log-logistic 3 parameters for development rate")
 } else if(input$model_218_mortality == 'll2' & input$model_218_emergence == 'll2' & input$model_218_development == 'll4' ) {
    print("Selected model: Log-logistic 2 parameters for mortality, log-logistic 2 parameters for emergence ratio, and log-logistic 4 parameters for development rate")
 } else if(input$model_218_mortality == 'll2' & input$model_218_emergence == 'll3' & input$model_218_development == 'll3' ) {
@@ -94,7 +94,7 @@ if(input$model_218_mortality == 'll2' & input$model_218_emergence == 'll2' & inp
     print("Selected model: Log-logistic 4 parameters")
     }
 }
-fitmodel()
+# fitmodel()
 knitr::kable( round(ECx(),2) )
 ```
 

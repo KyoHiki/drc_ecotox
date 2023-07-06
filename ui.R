@@ -212,7 +212,7 @@ progress::-moz-progress-bar {
                                          'Select hypothesis testing method for development rate',
                                          choices = c("Dunnett's test" = 'Dunnett',
                                            "Steel's test" = 'Steel'),
-                                         selected = 'Dunnet'),
+                                         selected = 'Dunnett'),
                            h5("You can see the bartlett's test result for homogenity of variance of development rate, and then select testing method.")
                             ),
                           

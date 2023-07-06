@@ -576,13 +576,13 @@ steel.test.formula <-
                 summarize(TOTAL=sum(TOTAL),DEAD=sum(DEAD)) %>% ungroup
               TOTAL <- data %>% dplyr::select(TOTAL) %>% as.numeric()
               DEAD_ctrl <- data %>% dplyr::filter(CONC=="0") %>% dplyr::select(DEAD) %>% as.numeric()
-              data_ <- data %>% mutate(TOTAL_ctrl = TOTAL, DEAD_ctrl =DEAD_ctrl) %>%  dplyr::filter(CONC!="0")
+              data2 <- data %>% mutate(TOTAL_ctrl = TOTAL, DEAD_ctrl =DEAD_ctrl) %>%  dplyr::filter(CONC!="0")
               ## Fisher's exact test                  
               fisher <- function(a,b,c,d){
                 dt <- matrix(c(a,b,c,d),ncol=2)
                 c(pvalue = fisher.test(dt)$p.value) 
               }
-              Res <- data_24 %>%
+              Res <- data2 %>%
                 rowwise()%>%
                 mutate(pvalue = fisher(DEAD,TOTAL-DEAD, DEAD_ctrl,TOTAL_ctrl-DEAD_ctrl)) %>% ungroup() %>%
                 mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
@@ -596,13 +596,13 @@ steel.test.formula <-
                 summarize(TOTAL=sum(TOTAL),EMERGED=sum(EMERGED)) %>% ungroup
               TOTAL <- data %>% dplyr::select(TOTAL) %>% as.numeric()
               EMER_ctrl <- data %>% dplyr::filter(CONC=="0") %>% dplyr::select(EMERGED) %>% as.numeric()
-              data_ <- data %>% mutate(TOTAL_ctrl = TOTAL, EMER_ctrl =EMER_ctrl) %>%  dplyr::filter(CONC!="0")
+              data2 <- data %>% mutate(TOTAL_ctrl = TOTAL, EMER_ctrl =EMER_ctrl) %>%  dplyr::filter(CONC!="0")
               ## Fisher's exact test                  
               fisher <- function(a,b,c,d){
                 dt <- matrix(c(a,b,c,d),ncol=2)
                 c(pvalue = fisher.test(dt)$p.value) 
               }
-              Res <- data_24 %>%
+              Res <- data2 %>%
                 rowwise()%>%
                 mutate(pvalue = fisher(EMERGED,TOTAL-EMERGED, EMER_ctrl,TOTAL_ctrl-EMER_ctrl)) %>% ungroup() %>%
                 mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%

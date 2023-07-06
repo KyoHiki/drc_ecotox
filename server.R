@@ -612,7 +612,7 @@ steel.test.formula <-
               data_F_emer =filedata() %>% group_by(CONC) %>%
                 summarize(TOTAL=sum(TOTAL),EMERGED=sum(EMERGED)) %>% ungroup
               TOTAL <- data_F_emer  %>% dplyr::filter(CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
-              EMER_ctrl <- data %>% dplyr::filter(CONC=="0") %>% dplyr::select(EMERGED) %>% as.numeric()
+              EMER_ctrl <- data_F_emer %>% dplyr::filter(CONC=="0") %>% dplyr::select(EMERGED) %>% as.numeric()
               data2_emer <- data_F_emer %>% mutate(TOTAL_ctrl = TOTAL, EMER_ctrl =EMER_ctrl) %>%  dplyr::filter(CONC!="0")
               ## Fisher's exact test                  
               fisher <- function(a,b,c,d){

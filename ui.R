@@ -87,6 +87,7 @@ progress::-moz-progress-bar {
                                                    "Chironomus: TG218,219" = "TG218",
                                                    "Chironomus: TG235" = "TG235"),
                                        selected = "TG201"),
+                          textInput(inputId = "chemical", "Input the name of test chemical",value="Chemical"),
                           selectInput("conc_unit", "Concentration Unit", 
                                       choices = c("g/L", "mg/L", "µg/L", "ng/L")),
                           ###### For algae (TG201)

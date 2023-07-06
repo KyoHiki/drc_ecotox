@@ -599,13 +599,13 @@ steel.test.formula <-
           }
           if ( inmethod_218_emergence() =="CA"){
                 data_CA <- data %>% group_by(CONC) %>% summarize(EMERGED= sum(EMERGED),TOTAL=sum(TOTAL))  
-                Res1 <- data.frame(CONC = data_CA$CONC, TOTAL=data_CA$TOTAL, DEAD=data_CA$DEAD)
+                Res1 <- data.frame(CONC = data_CA$CONC, TOTAL=data_CA$TOTAL, EMERGED=data_CA$EMERGED)
                 LENGTH <- nrow(data_CA)
           　　  for (i in 3:LENGTH){ 
 　　　　　　　　　　 Res1[i,4]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$statistic
                    Res1[i,5]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$p.value
                   　}
-                colnames(Res1) <-c("CONC","TOTAL","DEAD","Chi_squared","pvalue")
+                colnames(Res1) <-c("CONC","TOTAL","EMERGED","Chi_squared","pvalue")
                 Res1 <- Res1 %>%
                   mutate(Asterisk=  ifelse(pvalue<0.05,ifelse(pvalue>0.01,"*","**"),"" )) 
             } else if ( inmethod_218_emergence() =="Fisher"){

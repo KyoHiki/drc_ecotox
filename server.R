@@ -9,7 +9,9 @@ server <- function(input, output, session) {
   inmodel_201 <- reactive({input$model_TG201})
   inmodel_202 <- reactive({input$model_TG202})
   inmodel_203 <- reactive({input$model_TG203})
-  inmodel_218 <- reactive({input$model_TG218})
+  inmodel_218_mortality <- reactive({input$model_TG218_mortality})
+  inmodel_218_emergence <- reactive({input$model_TG218_emergence})
+  inmodel_218_development <- reactive({input$model_TG218_development})
   inmodel_235 <- reactive({input$model_TG235})
 
   
@@ -103,17 +105,94 @@ server <- function(input, output, session) {
       return(fit)
       }
     else if(intest_type() == 'TG218') {
-        if(inmodel_218() == 'll2') {
-          fit1 <- drm( DEAD/TOTAL ~ CONC, data = filedata(), fct = LL.2(), type="binomial")
-          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.2(), type="binomial")
-          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.2(), type="continuous")
+        if(inmodel_218_mortality() == 'll2' & inmodel_218_emergence() == 'll2' & inmodel_218_development() == 'll3' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.2(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.2(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.3(), type="continuous")
         }
-        else if(inmodel_218() == 'll3') {
+        else if(inmodel_218_mortality() == 'll2' & inmodel_218_emergence() == 'll2' & inmodel_218_development() == 'll4' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.2(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.2(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.4(), type="continuous")
+        }
+        else if(inmodel_218_mortality() == 'll2' & inmodel_218_emergence() == 'll3' & inmodel_218_development() == 'll3' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.2(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.3(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.3(), type="continuous")
+        }
+        else if(inmodel_218_mortality() == 'll2' & inmodel_218_emergence() == 'll3' & inmodel_218_development() == 'll4' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.2(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.3(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.4(), type="continuous")
+        }
+        else if(inmodel_218_mortality() == 'll2' & inmodel_218_emergence() == 'll4' & inmodel_218_development() == 'll3' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.2(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.4(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.3(), type="continuous")
+        }
+         else if(inmodel_218_mortality() == 'll2' & inmodel_218_emergence() == 'll4' & inmodel_218_development() == 'll4' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.2(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.4(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.4(), type="continuous")
+        }
+          
+        else if(inmodel_218_mortality() == 'll3' & inmodel_218_emergence() == 'll2' & inmodel_218_development() == 'll3' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.2(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.3(), type="continuous")
+        }
+        else if(inmodel_218_mortality() == 'll3' & inmodel_218_emergence() == 'll2' & inmodel_218_development() == 'll4' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.2(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.4(), type="continuous")
+        }
+        else if(inmodel_218_mortality() == 'll3' & inmodel_218_emergence() == 'll3' & inmodel_218_development() == 'll3' ) {
           fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3(), type="binomial")
           fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.3(), type="binomial") 
           fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.3(), type="continuous")
         }
-          else if(inmodel_218() == 'll4') {
+        else if(inmodel_218_mortality() == 'll3' & inmodel_218_emergence() == 'll3' & inmodel_218_development() == 'll4' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.3(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.4(), type="continuous")
+        }
+        else if(inmodel_218_mortality() == 'll3' & inmodel_218_emergence() == 'll4' & inmodel_218_development() == 'll3' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.4(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.3(), type="continuous")
+        }
+        else if(inmodel_218_mortality() == 'll3' & inmodel_218_emergence() == 'll4' & inmodel_218_development() == 'll4' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.3(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.4(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.4(), type="continuous")
+        }
+
+        else if(inmodel_218_mortality() == 'll4' & inmodel_218_emergence() == 'll2' & inmodel_218_development() == 'll3' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.4(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.2(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.3(), type="continuous")
+        }
+        else if(inmodel_218_mortality() == 'll4' & inmodel_218_emergence() == 'll2' & inmodel_218_development() == 'll4' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.4(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.2(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.4(), type="continuous")
+        }
+        else if(inmodel_218_mortality() == 'll4' & inmodel_218_emergence() == 'll3' & inmodel_218_development() == 'll3' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.4(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.3(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.3(), type="continuous")
+        }
+        else if(inmodel_218_mortality() == 'll4' & inmodel_218_emergence() == 'll3' & inmodel_218_development() == 'll4' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.4(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.3(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.4(), type="continuous")
+        }
+        else if(inmodel_218_mortality() == 'll4' & inmodel_218_emergence() == 'll4' & inmodel_218_development() == 'll3' ) {
+          fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.4(), type="binomial")
+          fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.4(), type="binomial") 
+          fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.3(), type="continuous")
+        }
+        else if(inmodel_218_mortality() == 'll4' & inmodel_218_emergence() == 'll4' & inmodel_218_development() == 'll4' ) {
           fit1 <- drm( DEAD/TOTAL~CONC, data = filedata(), fct = LL.4(), type="binomial")
           fit2 <- drm( EMERGED/TOTAL ~ CONC, data = filedata(), fct = LL.4(), type="binomial") 
           fit3 <- drm( DEVELOPMENT ~ CONC, data = filedata(), fct=LL.4(), type="continuous")
@@ -257,13 +336,11 @@ server <- function(input, output, session) {
       fit1 <- fit$fit1
       fit2 <- fit$fit2
       fit3 <- fit$fit3
-      par(mar=c(5,5,2,2))
+      par(mar=c(5,5,2,2), mfrow=c(1,3))
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality",
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
-      par(new=FALSE)
       plot(fit2, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Emergence ratio",
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
-      par(new=FALSE)
       plot(fit3, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Development rate",
            lty="dotted",cex=2,cex.axis =2, cex.lab=2)
     }

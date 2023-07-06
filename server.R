@@ -582,12 +582,11 @@ steel.test.formula <-
                 dt <- matrix(c(a,b,c,d),ncol=2)
                 c(pvalue = fisher.test(dt)$p.value) 
               }
-              Res <- data2 %>%
+              Res1 <- data2 %>%
                 rowwise()%>%
                 mutate(pvalue = fisher(DEAD,TOTAL-DEAD, DEAD_ctrl,TOTAL_ctrl-DEAD_ctrl)) %>% ungroup() %>%
                 mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
                 mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))
-              list("Fisher's exact test" = knitr::kable(Res) )
           }
           if ( inmethod_218_emergence() =="CA"){
             
@@ -602,26 +601,26 @@ steel.test.formula <-
                 dt <- matrix(c(a,b,c,d),ncol=2)
                 c(pvalue = fisher.test(dt)$p.value) 
               }
-              Res <- data2 %>%
+              Res2 <- data2 %>%
                 rowwise()%>%
                 mutate(pvalue = fisher(EMERGED,TOTAL-EMERGED, EMER_ctrl,TOTAL_ctrl-EMER_ctrl)) %>% ungroup() %>%
                 mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
                 mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))
-              list("Fisher's exact test" = knitr::kable(Res) )
           }
           if ( inmethod_218_development() =="Dunnett"){
             data_raw=filedata()
             data_raw$CONC <- as.factor(data_raw$CONC)
             fit <- aov( DEVELOPMENT ~ CONC, data = data_raw  )
-            Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
+            Res3 <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
             list("Bartlett's test for development rate (DR)" = Res_variance, "Dunnett's test for DR" = Res)
             } else if ( inmethod_218_development() =="Steel"){
             data_raw=filedata()
             data_raw$CONC <- as.factor(data_raw$CONC)
-            Res <- steel.test(DEVELOPMENT ~ CONC, data = data_raw, control = "0",alternative="less") %>%
+            Res3 <- steel.test(DEVELOPMENT ~ CONC, data = data_raw, control = "0",alternative="less") %>%
                mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))        
-            list("Bartlett's test for development rate (DR)" = Res_variance, "Steel's test for DR" = knitr::kable(Res) )
           }
+      list("Bartlett's test for development rate (DR)" = Res_variance, "Mortality" = knitr::kable(Res1),
+           "Emergence ratio" = knitr::kable(Res2), "Development rate" = knitr::kable(Res3) )
       }
       else if(intest_type() == 'TG235'){
           data=filedata()

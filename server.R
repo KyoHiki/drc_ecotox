@@ -505,6 +505,13 @@ steel.test.formula <-
     y
   }
 
+
+  ## Fisher's exact test                  
+  fisher <- function(a,b,c,d){
+              dt <- matrix(c(a,b,c,d),ncol=2)
+              c(pvalue = fisher.test(dt)$p.value) 
+            }
+
     
 
     
@@ -566,21 +573,21 @@ steel.test.formula <-
       else if(intest_type() == 'TG235'){
           data=filedata()
           data$CONC <- as.factor(data$CONC)
-          Res_variance <- bartlett.test(IMMOBILIZED~CONC, data=data)
-          if( inmethod_235() =="Dunnett"){
-            fit1 <- aov( IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="24")  )
-            Res1 <- summary (glht (fit1, linfct=mcp (CONC="Dunnett"), alternative="greater")) 
-            fit2 <- aov( IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="48")  )
-            Res2 <- summary (glht (fit2, linfct=mcp (CONC="Dunnett"), alternative="greater"))
-            list("Bartlett's test" = Res_variance, "Dunnett's test for 24 h" = Res1,"Dunnett's test for 48 h" = Res2)
-            } 
-          else if ( inmethod_235() =="Steel"){
-            Res1 <- steel.test(IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="24"), control = "0",alternative="greater") %>%
-              mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))    
-            Res2 <- steel.test(IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="48"), control = "0",alternative="greater") %>%
-              mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))    
-            list("Bartlett's test" = Res_variance, "Steel's test for 24 h" = Res1,"Steel's test for 48 h" = Res2)
-            }
+#          Res_variance <- bartlett.test(IMMOBILIZED~CONC, data=data)
+#          if( inmethod_235() =="Dunnett"){
+#            fit1 <- aov( IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="24")  )
+#            Res1 <- summary (glht (fit1, linfct=mcp (CONC="Dunnett"), alternative="greater")) 
+#            fit2 <- aov( IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="48")  )
+#            Res2 <- summary (glht (fit2, linfct=mcp (CONC="Dunnett"), alternative="greater"))
+#            list("Bartlett's test" = Res_variance, "Dunnett's test for 24 h" = Res1,"Dunnett's test for 48 h" = Res2)
+#            } 
+#          else if ( inmethod_235() =="Steel"){
+#            Res1 <- steel.test(IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="24"), control = "0",alternative="greater") %>%
+#              mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))    
+#            Res2 <- steel.test(IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="48"), control = "0",alternative="greater") %>%
+#              mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))    
+#            list("Bartlett's test" = Res_variance, "Steel's test for 24 h" = Res1,"Steel's test for 48 h" = Res2)
+#            }
           else if ( inmethod_235() =="Fisher"){
             data=filedata() %>% group_by(CONC,TIME) %>%
               summarize(TOTAL=sum(TOTAL),IMMOBILIZED=sum(IMMOBILIZED)) %>% ungroup
@@ -592,10 +599,6 @@ steel.test.formula <-
               dplyr::filter(CONC!="0" & TIME=="24")
             data_48 <- data %>% mutate(TOTAL_ctrl = TOTAL_48, IMMOBILIZED_ctrl =IM_48) %>%
               dplyr::filter(CONC!="0" & TIME=="48")
-            fisher <- function(a,b,c,d){
-              dt <- matrix(c(a,b,c,d),ncol=2)
-              c(pvalue = fisher.test(dt)$p.value) 
-            }
             Res1 <- data_24 %>%
               rowwise()%>%
               mutate(pvalue = fisher(IMMOBILIZED,TOTAL-IMMOBILIZED, IMMOBILIZED_ctrl,TOTAL_ctrl-IMMOBILIZED_ctrl)) %>% ungroup() %>%
@@ -606,7 +609,7 @@ steel.test.formula <-
               mutate(pvalue = fisher(IMMOBILIZED,TOTAL-IMMOBILIZED, IMMOBILIZED_ctrl,TOTAL_ctrl-IMMOBILIZED_ctrl)) %>% ungroup() %>%
               mutate(p_adjusted_BH = p.adjust(pvalue,"holm")) %>%
               mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))    
-            list("Bartlett's test" = Res_variance, "Fisher's exact test for 24 h" = Res1,"Fisher's exact test for 48 h" = Res2)
+            list("Fisher's exact test for 24 h" = Res1,"Fisher's exact test for 48 h" = Res2)
             }
           }
       })

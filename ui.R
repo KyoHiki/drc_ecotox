@@ -200,19 +200,19 @@ progress::-moz-progress-bar {
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
                             radioButtons('test_method_TG218_mortality',
                                          'Select hypothesis testing method for mortality',
-                                         choices = c("Cochran-Armitage test" = 'CA'
+                                         choices = c("Cochran-Armitage test" = 'CA',
                                            "Fisher's exact test with BH correction" = 'Fisher'),
                                          selected = 'CA'),
                             radioButtons('test_method_TG218_mortality',
                                          'Select hypothesis testing method for mortality',
-                                         choices = c("Cochran-Armitage test" = 'CA'
+                                         choices = c("Cochran-Armitage test" = 'CA',
                                            "Fisher's exact test with BH correction" = 'Fisher'),
                                          selected = 'CA'),
                             radioButtons('test_method_TG218_development',
                                          'Select hypothesis testing method for development',
-                                         choices = c("Dunnett's test" = 'Dunnett'
+                                         choices = c("Dunnett's test" = 'Dunnett',
                                            "Steel's test" = 'Steel'),
-                                         selected = 'CA'),
+                                         selected = 'Dunnet'),
                            h5("You can see the bartlett's test result for homogenity of variance of development rate, and then select testing method.")
                             ),
                           

@@ -480,14 +480,14 @@ steel.test.formula <-
             Res1 <- summary (glht (fit1, linfct=mcp (CONC="Dunnett"), alternative="greater")) 
             fit2 <- aov( IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="48")  )
             Res2 <- summary (glht (fit2, linfct=mcp (CONC="Dunnett"), alternative="greater"))
-            list("Bartlett test" = Res_variance, "Dunnett's test for 24 h" = Res1,"Dunnett's test for 48 h" = Res2)
+            list("Bartlett's test" = Res_variance, "Dunnett's test for 24 h" = Res1,"Dunnett's test for 48 h" = Res2)
             } 
           else if ( inmethod_235() =="Steel"){
             Res1 <- steel.test(IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="24"), control = "0",alternative="greater") %>%
               mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))    
             Res2 <- steel.test(IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="48"), control = "0",alternative="greater") %>%
               mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))    
-            list("Bartlett test" = Res_variance, "Steel's test for 24 h" = Res1,"Steel's test for 48 h" = Res2)
+            list("Bartlett's test" = Res_variance, "Steel's test for 24 h" = Res1,"Steel's test for 48 h" = Res2)
             }
           else if ( inmethod_235() =="Fisher"){
             data=filedata() %>% group_by(CONC,TIME) %>%
@@ -514,7 +514,7 @@ steel.test.formula <-
               mutate(pvalue = fisher(IMMOBILIZED,TOTAL-IMMOBILIZED, IMMOBILIZED_ctrl,TOTAL_ctrl-IMMOBILIZED_ctrl)) %>% ungroup() %>%
               mutate(p_adjusted_BH = p.adjust(pvalue,"holm")) %>%
               mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))    
-            list("Bartlett test" = Res_variance, "Fisher's exact test for 24 h" = Res1,"Fisher's exact test for 48 h" = Res2)
+            list("Bartlett's test" = Res_variance, "Fisher's exact test for 24 h" = Res1,"Fisher's exact test for 48 h" = Res2)
             }
           }
       })

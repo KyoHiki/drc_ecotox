@@ -570,7 +570,14 @@ steel.test.formula <-
           data$CONC <- as.factor(data$CONC)
           Res_variance <- bartlett.test(DEVELOPMENT~CONC, data=data)
           if( inmethod_218_mortality() =="CA"){
-            
+            　　data_CA <- data %>% group_by(CONC) %>% summarize(EMERGED= sum(EMERGED),TOTAL=sum(TOTAL))  
+                Res1 <- data.frame(CONC = data_CA$CONC)
+                LENGTH <- nrow(data_CA)
+          　　  for (i in 3:LENGTH){ 
+　　　　　　　　　　 Res1[(i-2),2]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$statistic
+                   Res1[(i-2),3]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$p.value
+                  　}
+                colnames(Res1) <-c("CONC","Chi_squared","pvalue")
             } else if ( inmethod_218_mortality() =="Fisher"){
               data=filedata() %>% group_by(CONC) %>%
                 summarize(TOTAL=sum(TOTAL),DEAD=sum(DEAD)) %>% ungroup

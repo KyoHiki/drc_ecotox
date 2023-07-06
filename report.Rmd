@@ -94,14 +94,12 @@ knitr::kable( round(ECx(),2) )
       fit2 <- fit$fit2
       fit3 <- fit$fit3
 　　　 par(mar=c(5,5,2,2), mfrow=c(3,1),mgp=c(3, 1, 0) )
-      png('drc_plot_TG218.png', width = 450, height = 400)
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality",
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
       plot(fit2, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Emergence ratio",
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
       plot(fit3, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Development rate",
            lty="dotted",cex=2,cex.axis =2, cex.lab=2)
-      dev.off()
     } else if(input$test_type == 'TG235') {
       fit <- fitmodel()
       fit1 <- fit$fit1

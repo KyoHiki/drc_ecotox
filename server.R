@@ -594,7 +594,7 @@ steel.test.formula <-
                 mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))
               list("Fisher's exact test" = knitr::kable(Res) )
           }
-          if ( inmethod_218_development() =="Dunnet"){
+          if ( inmethod_218_development() =="Dunnett"){
             fit <- aov( DEVELOPMENT ~ CONC, data = data  )
             Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
             list("Bartlett's test for development rate (DR)" = Res_variance, "Dunnett's test for DR" = Res)

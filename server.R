@@ -264,7 +264,7 @@ server <- function(input, output, session) {
       XX <- input$ecx_TG218
       drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fit1)[[1]]) 
       drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fit2)[[1]])
-      drc_df3 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fit3)[[1]])
+      drc_df3 <- data.frame(ED(fit3, c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fit3)[[1]])
       colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
       colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
       colnames(drc_df3) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')

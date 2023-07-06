@@ -487,8 +487,7 @@ server <- function(input, output, session) {
     return(df)
   }
 steel.test.formula <-
-  function(formula, data, subset, na.action, ...)
-  {
+  function(formula, data, subset, na.action, ...)   {
     if(missing(formula) || (length(formula) != 3L))
       stop("'formula' missing or incorrect")
     m <- match.call(expand.dots = FALSE)
@@ -504,6 +503,7 @@ steel.test.formula <-
     y <- do.call("steel.test", append(as.list(mf), list(...)))
     y
   }
+                    
 
 
   ## Fisher's exact test                  

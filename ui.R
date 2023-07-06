@@ -50,18 +50,21 @@ progress::-moz-progress-bar {
                         br(), br(), 
                         HTML("<center><font face=verdana size=6 color=#009E73>Welcome to the drc-ecotox application</font></center>"),
                         br(), br(),
-                        fixedRow(column(8, offset = 1,
+                        fixedRow(column(6, offset = 1,
                                         tags$blockquote("'drc-ecotox' is a freely available tool for dose-response (or concentration-response) characterization from standardized ecotoxicity data.",
                                                         br(), 
                                                         "This application helps the users to make a plot of dose-response curve, estimate effect concentrations (ECx), and estimate no observed effect concentrations (NOEC).", br(), 
-                                                         br(), br(),
+                                                         br(), 
                                                         style="text-align:justify;")
                                         
                         )),
                         fixedRow(column(10, offset = 1,
                                         br(),
+                                        p(strong("Note")),
+                                        p("Please be aware that this application is currently in beta testing. As such, modifications and updates may occur without prior notification.")
+                                        br(),
                                         p(strong("Contact")),
-                                        p("If you have any feedback on the Shiny application, feel free to email us: ", strong("referencelab.risk@nies.go.jp"), ".")
+                                        p("We welcome your feedback and suggestions as we continue to improve and refine this application: ", strong("referencelab.risk@nies.go.jp"), ".")
                         )),
                       )
              ),

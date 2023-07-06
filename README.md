@@ -18,7 +18,6 @@ install.packages("here")
 install.packages("shinyjs")
 install.packages("shinycssloaders")
 install.packages("mvtnorm")
-install.packages("DescTools")
 
 # If you have already installed packages, please enter the following command.
 library(shiny)

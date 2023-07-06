@@ -368,7 +368,9 @@ server <- function(input, output, session) {
   
    inmethod_201 <- reactive({input$test_method_TG201})
    inmethod_203 <- reactive({input$test_method_TG203})
-   inmethod_218 <- reactive({input$test_method_TG218})
+   inmethod_218_mortality <- reactive({input$test_method_TG218_mortality})
+   inmethod_218_emergence <- reactive({input$test_method_TG218_emergence})
+   inmethod_218_development <- reactive({input$test_method_TG218_development})
    inmethod_235 <- reactive({input$test_method_TG235})
 
    # function of Stee's test, taken from https://www.trifields.jp/introducing-steel-in-r-1637
@@ -563,23 +565,48 @@ steel.test.formula <-
             list("24 h" = knitr::kable(Res1), "48 h" = knitr::kable(Res2),"72 h" = knitr::kable(Res3), "96 h" = knitr::kable(Res4) )
             }
         }
+        else if(intest_type() == 'TG218'){
+          data=filedata()
+          data$CONC <- as.factor(data$CONC)
+          Res_variance <- bartlett.test(DEVELOPMENT~CONC, data=data)
+          if( inmethod_218_mortality() =="CA"){
+            
+            } else if ( inmethod_218_mortality() =="Fisher"){
+
+          }
+          if ( inmethod_218_emergence() =="CA"){
+            
+            } else if ( inmethod_218_emergence() =="Fisher"){
+              data=filedata() %>% group_by(CONC,TIME) %>%
+              summarize(TOTAL=sum(TOTAL),IMMOBILIZED=sum(IMMOBILIZED)) %>% ungroup
+              TOTAL <- data %>% dplyr::select(TOTAL) %>% as.numeric()
+              EMER_ctrl <- data %>% dplyr::filter(CONC=="0") %>% dplyr::select(EMERGED) %>% as.numeric()
+              data_ <- data %>% mutate(TOTAL_ctrl = TOTAL, EMER_ctrl =EMER_ctrl) %>%  dplyr::filter(CONC!="0")
+              ## Fisher's exact test                  
+              fisher <- function(a,b,c,d){
+                dt <- matrix(c(a,b,c,d),ncol=2)
+                c(pvalue = fisher.test(dt)$p.value) 
+              }
+              Res1 <- data_24 %>%
+                rowwise()%>%
+                mutate(pvalue = fisher(EMERGED,TOTAL-EMERGED, EMER_ctrl,TOTAL_ctrl-EMER_ctrl)) %>% ungroup() %>%
+                mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
+                mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))
+              list("Fisher's exact test" = knitr::kable(Res) )
+          }
+          if ( inmethod_218_development() =="Dunnet"){
+            fit <- aov( DEVELOPMENT ~ CONC, data = data  )
+            Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
+            list("Bartlett's test for development rate (DR)" = Res_variance, "Dunnett's test for DR" = Res)
+            } else if ( inmethod_218_development() =="Steel"){
+            Res <- steel.test(DEVELOPMENT ~ CONC, data = data, control = "0",alternative="less") %>%
+               mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))        
+            list("Bartlett's test for development rate (DR)" = Res_variance, "Steel's test for DR" = knitr::kable(Res) )
+          }
+      }
       else if(intest_type() == 'TG235'){
           data=filedata()
           data$CONC <- as.factor(data$CONC)
-#          Res_variance <- bartlett.test(IMMOBILIZED~CONC, data=data)
-#          if( inmethod_235() =="Dunnett"){
-#            fit1 <- aov( IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="24")  )
-#            Res1 <- summary (glht (fit1, linfct=mcp (CONC="Dunnett"), alternative="greater")) 
-#            fit2 <- aov( IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="48")  )
-#            Res2 <- summary (glht (fit2, linfct=mcp (CONC="Dunnett"), alternative="greater"))
-#            list("Bartlett's test" = Res_variance, "Dunnett's test for 24 h" = Res1,"Dunnett's test for 48 h" = Res2)
-#            } 
-#          else if ( inmethod_235() =="Steel"){
-#            Res1 <- steel.test(IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="24"), control = "0",alternative="greater") %>%
-#              mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))    
-#            Res2 <- steel.test(IMMOBILIZED ~ CONC, data = data %>% dplyr::filter(TIME=="48"), control = "0",alternative="greater") %>%
-#              mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))    
-#            list("Bartlett's test" = Res_variance, "Steel's test for 24 h" = Res1,"Steel's test for 48 h" = Res2)
           if ( inmethod_235() =="Fisher"){
             data=filedata() %>% group_by(CONC,TIME) %>%
               summarize(TOTAL=sum(TOTAL),IMMOBILIZED=sum(IMMOBILIZED)) %>% ungroup

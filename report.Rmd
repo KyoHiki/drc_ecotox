@@ -17,6 +17,7 @@ if(input$test_type == 'TG201'){
 } else if(input$test_type == 'TG235') {
   print("Test No. 235: Chironomus sp., Acute Immobilisation Test")
 }
+print(paste("Test chemical:",input$chemical))
 ```
   
 

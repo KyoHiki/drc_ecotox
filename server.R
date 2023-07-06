@@ -574,8 +574,8 @@ steel.test.formula <-
                 Res1 <- data.frame(CONC = data_CA$CONC)
                 LENGTH <- nrow(data_CA)
           　　  for (i in 3:LENGTH){ 
-　　　　　　　　　　 Res1[(i-2),2]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$statistic
-                   Res1[(i-2),3]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$p.value
+　　　　　　　　　　 Res1[i,2]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$statistic
+                   Res1[i,3]<-  prop.trend.test(data_CA[1:i,]$EMERGED, data_CA[1:i,]$TOTAL)$p.value
                   　}
                 colnames(Res1) <-c("CONC","Chi_squared","pvalue")
             } else if ( inmethod_218_mortality() =="Fisher"){

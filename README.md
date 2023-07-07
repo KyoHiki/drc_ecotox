@@ -1,5 +1,5 @@
 # drc-ecotox
-"drc-ecotox" is freely available tool for dose-response analysis of standradized ecotoxicity tests. "drc-ecotox" is based on R and the "drc" and "Shiny" R packages.
+"drc-ecotox" is freely available tool for dose-response analysis of standradized ecotoxicity tests. "drc-ecotox" is based on R and the "drc" and "shiny" R packages.
   
 
     

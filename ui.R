@@ -79,7 +79,7 @@ progress::-moz-progress-bar {
                         sidebarPanel(
                           style = "background-color: #009E73;",
                           width = 3,
-                          radioButtons('test_type', 
+                          selectInput('test_type', 
                                        "Select test type",
                                        choices = c("Algae: TG201" = "TG201",
                                                    "Daphnia: TG202" = "TG202",

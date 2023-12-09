@@ -361,7 +361,6 @@ server <- function(input, output, session) {
   
   
   
-  
   ####################################################################################
   #######  hypothesis testing ########################################################
   ####################################################################################
@@ -373,7 +372,7 @@ server <- function(input, output, session) {
    inmethod_218_development <- reactive({input$test_method_TG218_development})
    inmethod_235 <- reactive({input$test_method_TG235})
 
-   # function of Stee's test, taken from https://www.trifields.jp/introducing-steel-in-r-1637
+   # function of Steel's test, taken from https://www.trifields.jp/introducing-steel-in-r-1637
    steel.test <- function(x, ...) UseMethod("steel.test")
     
     steel.test.default <- function(x, g, control = NULL, alternative = c("two.sided", "less", "greater"), ...){

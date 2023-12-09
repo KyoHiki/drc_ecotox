@@ -173,6 +173,8 @@ knitr::kable( round(ECx(),2) )
 ## 4. hypothesis testing
 ```{r hypothesis_testing,echo=FALSE}
 if(input$test_type == 'TG201'){
+}else if(input$test_type == 'TG203'){
+print("NOEC, an optional toxicity value, was estimated by Fisher's exact test with Bonferroni-Holm correction correction.")
 }else if(input$test_type == 'TG218'){
   if(input$test_method_TG218_mortality=='CA'){
      print("Mortality: analyzed by step-down Cochran-Armitage test")

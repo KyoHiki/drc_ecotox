@@ -30,7 +30,7 @@ if(input$test_type == 'TG202' | input$test_type == 'TG235'){
   filedata() %>%
   group_by(CONC,TIME) %>% 
   summarize_at(vars(-BEAKER),.funs= c(mean,sd)) %>%
-  rename(TOTAL_mean = TOTAL_fn1, TOTAL_sd =TOTAL_fn2, IMMOBILIZED_mean = IMMOBILIZED_fn1, IMMOBILIZED_sd = IMMOBILIZED_fn2)
+  rename(TOTAL_mean = TOTAL_fn1, TOTAL_sd =TOTAL_fn2, DEAD_mean = DEAD_fn1, DEAD_sd = DEAD_fn2)
 }else if(input$test_type == 'TG218') {
   summary_data <- filedata() %>%
   group_by(CONC) %>% 

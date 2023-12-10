@@ -85,7 +85,8 @@ progress::-moz-progress-bar {
                                                    "Daphnia: TG202" = "TG202",
                                                    "Fish: TG203" = "TG203",
                                                    "Chironomus: TG218,219" = "TG218",
-                                                   "Chironomus: TG235" = "TG235"),
+                                                   "Chironomus: TG235" = "TG235",
+                                                   "Fish embryo: TG236" = "TG236"),
                                        selected = "TG201"),
                           textInput(inputId = "chemical", "Input the name of test chemical",value="Chemical"),
                           selectInput("conc_unit", "Concentration Unit", 
@@ -244,6 +245,34 @@ progress::-moz-progress-bar {
                                          choices = c("Fisher's exact test with BH correction" = 'Fisher'),
                                          selected = 'Fisher'),
                        #    h5("You can see the bartlett's test result for homogenity of variance, and then select testing method.")
+                            ),
+
+                          ###### For fish embryo (TG236)
+                          conditionalPanel(
+                            condition = "input.test_type == 'TG236'",
+                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
+                            fileInput('datafile_TG236',
+                                      'Select an input file',
+                                      accept = c('.csv')),
+                            h5("You can download an example file: ", 
+                               a("here", href = "FishTG236Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;",
+                                 download = 'FishTG236Data_sample.csv') ),
+                            br(),
+                            br(),
+                            radioButtons('model_TG236',
+                                         'Select fitting model',
+                                         choices = c('log-logistic 2 parameters' = 'll2',
+                                                     'log-logistic 3 parameters' = 'll3',
+                                                     'log-logistic 4 parameters' = 'll4'),
+                                         selected = 'll2'),
+                            br(),
+                            numericInput(inputId="ecx_TG236",label="Determine effect concentration X%",value=50,min=0,max=100),
+                            br(),
+                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
+                            radioButtons('test_method_TG236',
+                                         'Select hypothesis testing method',
+                                         choices = c("Fisher's exact test with BH correction" = 'Fisher'),
+                                         selected = 'Fisher')
                             ),
 
                           

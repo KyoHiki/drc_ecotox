@@ -13,7 +13,8 @@ server <- function(input, output, session) {
   inmodel_218_emergence <- reactive({input$model_TG218_emergence})
   inmodel_218_development <- reactive({input$model_TG218_development})
   inmodel_235 <- reactive({input$model_TG235})
-
+  inmodel_236 <- reactive({input$model_TG236})
+  
   
   validateFile <- function(filename){
     extFile <- tools::file_ext(filename)
@@ -48,6 +49,11 @@ server <- function(input, output, session) {
         req(input$datafile_TG235)
         validateFile(input$datafile_TG235)
         ff <- input$datafile_TG235
+        read.csv(file=ff$datapath, header=TRUE)
+      }  else if(intest_type() == 'TG236') {
+        req(input$datafile_TG236)
+        validateFile(input$datafile_TG236)
+        ff <- input$datafile_TG236
         read.csv(file=ff$datapath, header=TRUE)
       }
   })
@@ -216,6 +222,28 @@ server <- function(input, output, session) {
       fit <- list(fit1 = fit1, fit2 = fit2)
       return(fit)
       }
+    else if(intest_type() == 'TG236') {
+        if(inmodel_236() == 'll2') {
+          fit1 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.2(), type="binomial")
+          fit2 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.2(), type="binomial")
+          fit3 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="72"), fct = LL.2(), type="binomial")
+          fit4 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="96"), fct = LL.2(), type="binomial")
+        }
+      else if(inmodel_236() == 'll3') {
+          fit1 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.3(), type="binomial")
+          fit2 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3(), type="binomial")
+          fit3 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="72"), fct = LL.3(), type="binomial")
+          fit4 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="96"), fct = LL.3(), type="binomial")
+        }
+          else if(inmodel_236() == 'll4') {
+          fit1 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.4(), type="binomial")
+          fit2 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.4(), type="binomial")
+          fit3 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="72"), fct = LL.4(), type="binomial")
+          fit4 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="96"), fct = LL.4(), type="binomial")
+        }
+      fit <- list(fit1 = fit1, fit2 = fit2, fit3=fit3, fit4=fit4)
+      return(fit)
+      }
   })
   
   
@@ -282,6 +310,24 @@ server <- function(input, output, session) {
       colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
       drc_df <- rbind(drc_df1,drc_df2)
       rownames(drc_df) <- c('24 h','48 h')
+    }
+    else if(intest_type() == 'TG236') {
+      fit <- fitmodel()
+      fit1 <- fit$fit1
+      fit2 <- fit$fit2
+      fit3 <- fit$fit3
+      fit4 <- fit$fit4
+      XX <- input$ecx_TG236
+      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE),"Slope"=coefficients(fit1)[[1]]) 
+      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE),"Slope"=coefficients(fit2)[[1]])
+      drc_df3 <- data.frame(ED(fit3, c(XX),interval = "delta",display=FALSE),"Slope"=coefficients(fit3)[[1]]) 
+      drc_df4 <- data.frame(ED(fit4, c(XX),interval = "delta",display=FALSE),"Slope"=coefficients(fit4)[[1]])
+      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      colnames(drc_df3) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      colnames(drc_df4) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      drc_df <- rbind(drc_df1,drc_df2, drc_df3, drc_df4)
+      rownames(drc_df) <- c('24 h','48 h','72 h','96 h')
     }
     drc_df
     }
@@ -356,6 +402,26 @@ server <- function(input, output, session) {
            ylim=c(0,1), col="#D55E00",cex=2,cex.axis =2, cex.lab=2)
       legend("topleft",inset=0.05, legend = c("24 h","48 h"), col = c("black","#D55E00"), lty = c("dotted","solid"),cex=2)
     }
+      else if(intest_type() == 'TG236') {
+      fit <- fitmodel()
+      fit1 <- fit$fit1
+      fit2 <- fit$fit2
+      fit3 <- fit$fit3
+      fit4 <- fit$fit4
+      par(mar=c(5,5,2,2))
+      plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality", 
+           ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
+      par(new=TRUE)
+      plot(fit2, log="x", broken=TRUE, xlab="", ylab="", main="",
+           ylim=c(0,1), col="#D55E00",cex=2,cex.axis =2, cex.lab=2)
+      par(new=TRUE)
+      plot(fit3, log="x", broken=TRUE, xlab="", ylab="", main="",
+           ylim=c(0,1), lty="dotted", col="tomato",cex=2,cex.axis =2, cex.lab=2)
+      par(new=TRUE)
+      plot(fit4, log="x", broken=TRUE, xlab="", ylab="", main="",
+           ylim=c(0,1), col="black",cex=2,cex.axis =2, cex.lab=2)
+      legend("topleft",inset=0.05, legend = c("24 h","48 h","72 h","96 h"), col = c("black","#D55E00","tomato","black"), lty = c("dotted","solid","dotted","solid"),cex=2)
+    }
     })
 
   
@@ -371,6 +437,7 @@ server <- function(input, output, session) {
    inmethod_218_emergence <- reactive({input$test_method_TG218_emergence})
    inmethod_218_development <- reactive({input$test_method_TG218_development})
    inmethod_235 <- reactive({input$test_method_TG235})
+   inmethod_236 <- reactive({input$test_method_TG236})
 
    # function of Steel's test, taken from https://www.trifields.jp/introducing-steel-in-r-1637
    steel.test <- function(x, ...) UseMethod("steel.test")

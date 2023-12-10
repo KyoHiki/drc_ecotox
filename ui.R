@@ -268,11 +268,7 @@ progress::-moz-progress-bar {
                             br(),
                             numericInput(inputId="ecx_TG236",label="Determine effect concentration X%",value=50,min=0,max=100),
                             br(),
-                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                            radioButtons('test_method_TG236',
-                                         'Select hypothesis testing method',
-                                         choices = c("Fisher's exact test with BH correction" = 'Fisher'),
-                                         selected = 'Fisher')
+                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}'))
                             ),
 
                           

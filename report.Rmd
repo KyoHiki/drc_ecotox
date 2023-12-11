@@ -1,8 +1,7 @@
 ---
 title: "Analysis report by drc-ecotox (β)"
 date: "`r format(Sys.time(), '%Y/%m/%d')`"
-output: word_document:
-  toc: true
+output: word_document
 ---
 
 ## 0. Test type

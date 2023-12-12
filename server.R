@@ -251,17 +251,17 @@ server <- function(input, output, session) {
       }
     else if(intest_type() == 'TG249') {
         if(inmodel_249() == 'll2') {
-          almarBlue_bg <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          alamarBlue_bg <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
           CDFAAM_bg <- filedata() %>% dplyr::filter(DYE=="CDFAAM" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
           NeutralRed_bg <- filedata() %>% dplyr::filter(DYE=="NeutralRed" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
-          almarBlue_ctrl <- almarBlue %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          alamarBlue_ctrl <- alamarBlue %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
           CDFAAM_ctrl <- CDFAAM %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
           NeutralRed_ctrl <- NeutralRed %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector 
-          almarBlue <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC!="CellFree") %>% mutate(FLUORESCENCE = (FLUORESCENCE- almarBlue_bg[[1]])/almarBlue_ctrl[[1]])
+          alamarBlue <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC!="CellFree") %>% mutate(FLUORESCENCE = (FLUORESCENCE- alamarBlue_bg[[1]])/alamarBlue_ctrl[[1]])
           CDFAAM <- filedata() %>% dplyr::filter(DYE=="CDFAAM" & CONC!="CellFree")  %>% mutate(FLUORESCENCE = (FLUORESCENCE- CDFAAM_bg[[1]])/CDFAAM_ctrl[[1]])
           NeutralRed <- filedata() %>% dplyr::filter(DYE=="NeutralRed" & CONC!="CellFree")  %>% mutate(FLUORESCENCE = (FLUORESCENCE- NeutralRed_bg[[1]])/NeutralRed_ctrl[[1]])
-          almarBlue$CONC <- as.numeric(almarBlue$CONC)
-          CDFAAM$CONC <- as.numeric(almarBlue$CONC)
+          alamarBlue$CONC <- as.numeric(alamarBlue$CONC)
+          CDFAAM$CONC <- as.numeric(CDFAAM$CONC)
           NeutralRed$CONC <- as.numeric(NeutralRed$CONC)
           fit1 <- drm( FLUORESCENCE ~ CONC, data = almarBlue , fct = LL.2(), type="continuous")
           fit2 <- drm( FLUORESCENCE ~ CONC, data = CDFAAM, fct = LL.2(), type="continuous")

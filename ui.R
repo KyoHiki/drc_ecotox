@@ -271,6 +271,33 @@ progress::-moz-progress-bar {
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}'))
                             ),
 
+                          ###### For fish cell line (TG249)
+                          conditionalPanel(
+                            condition = "input.test_type == 'TG249'",
+                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
+                            fileInput('datafile_TG249',
+                                      'Select an input file',
+                                      accept = c('.csv')),
+                            h5("You can download an example file: ", 
+                               a("here", href = "FishCellTG249Data_sample.csv", TARGET = "_blank",style="text-decoration:underline;",
+                                 download = 'FishCellTG249Data_sample.csv') ),
+                            br(),
+                            br(),
+                            radioButtons('model_TG249',
+                                         'Select fitting model',
+                                         choices = c('log-logistic 2 parameters' = 'll2'),
+                                         selected = 'll2'),
+                            br(),
+                            numericInput(inputId="ecx_TG249",label="Determine effect concentration X%",value=50,min=0,max=100),
+                            br(),
+                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
+                            radioButtons('test_method_TG249',
+                                         'Select hypothesis testing method',
+                                         choices = c("Dunnett's test" = 'Dunnett'),
+                                         selected = 'Dunnett'),
+                       #    h5("You can see the bartlett's test result for homogenity of variance, and then select testing method.")
+                            ),
+
                           
                           fixedRow(
                             column(12, align="center",

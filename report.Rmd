@@ -247,7 +247,6 @@ print("NOEC, an optional toxicity value, was estimated by Fisher's exact test wi
 }
 }else if(input$test_type == 'TG235'){
 print("NOEC, an optional toxicity value, was estimated by Fisher's exact test with Bonferroni-Holm correction correction.")
-}
 }else if(input$test_method_TG249=='Dunnett'){
 print("CEll viability: analyzed by Dunnett's test")
 }

@@ -222,6 +222,7 @@ knitr::kable( round(ECx(),2) )
       plot(fit3, log="x", broken=TRUE, xlab="", ylab="", main="",
            ylim=c(0,1), lty="solid", col="#D55E00",cex=2,cex.axis =2, cex.lab=2)
       legend("topleft",inset=0.05, legend = c("almarBlue","CFDA-AM","Neutral Red"), col = c("#0072B2","#009E73","#D55E00"), lty = c("solid","dotted","solid"),cex=2)
+}
 ```
 
 ## 4. hypothesis testing

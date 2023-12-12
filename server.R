@@ -14,7 +14,7 @@ server <- function(input, output, session) {
   inmodel_218_development <- reactive({input$model_TG218_development})
   inmodel_235 <- reactive({input$model_TG235})
   inmodel_236 <- reactive({input$model_TG236})
-  
+  inmodel_249 <- reactive({input$model_TG249})
   
   validateFile <- function(filename){
     extFile <- tools::file_ext(filename)
@@ -54,6 +54,11 @@ server <- function(input, output, session) {
         req(input$datafile_TG236)
         validateFile(input$datafile_TG236)
         ff <- input$datafile_TG236
+        read.csv(file=ff$datapath, header=TRUE)
+      }  else if(intest_type() == 'TG249') {
+        req(input$datafile_TG249)
+        validateFile(input$datafile_TG249)
+        ff <- input$datafile_TG249
         read.csv(file=ff$datapath, header=TRUE)
       }
   })
@@ -244,6 +249,26 @@ server <- function(input, output, session) {
       fit <- list(fit1 = fit1, fit2 = fit2, fit3=fit3, fit4=fit4)
       return(fit)
       }
+    else if(intest_type() == 'TG249') {
+        if(inmodel_249() == 'll2') {
+          almarBlue_bg <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          CDFAAM_bg <- filedata() %>% dplyr::filter(DYE=="CDFAAM" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          NeutralRed_bg <- filedata() %>% dplyr::filter(DYE=="NeutralRed" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          almarBlue_ctrl <- almarBlue %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          CDFAAM_ctrl <- CDFAAM %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          NeutralRed_ctrl <- NeutralRed %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector 
+          almarBlue <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC!="CellFree") %>% mutate(FLUORESCENCE = (FLUORESCENCE- almarBlue_bg[[1]])/almarBlue_ctrl[[1]])
+          CDFAAM <- filedata() %>% dplyr::filter(DYE=="CDFAAM" & CONC!="CellFree")  %>% mutate(FLUORESCENCE = (FLUORESCENCE- CDFAAM_bg[[1]])/CDFAAM_ctrl[[1]])
+          NeutralRed <- filedata() %>% dplyr::filter(DYE=="NeutralRed" & CONC!="CellFree")  %>% mutate(FLUORESCENCE = (FLUORESCENCE- NeutralRed_bg[[1]])/NeutralRed_ctrl[[1]])
+          almarBlue$CONC <- as.numeric(almarBlue$CONC)
+          CDFAAM$CONC <- as.numeric(almarBlue$CONC)
+          NeutralRed$CONC <- as.numeric(NeutralRed$CONC)
+          fit1 <- drm( FLUORESCENCE ~ CONC, data = almarBlue , fct = LL.2(), type="continuous")
+          fit2 <- drm( FLUORESCENCE ~ CONC, data = CDFAAM, fct = LL.2(), type="continuous")
+          fit3 <- drm( FLUORESCENCE ~ CONC, data = NeutralRed, fct = LL.2(), type="continuous")
+        }
+      fit <- list(fit1 = fit1, fit2 = fit2, fit3=fit3)
+      return(fit)
   })
   
   
@@ -328,6 +353,21 @@ server <- function(input, output, session) {
       colnames(drc_df4) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
       drc_df <- rbind(drc_df1,drc_df2, drc_df3, drc_df4)
       rownames(drc_df) <- c('24 h','48 h','72 h','96 h')
+    }
+    else if(intest_type() == 'TG249') {
+      fit <- fitmodel()
+      fit1 <- fit$fit1
+      fit2 <- fit$fit2
+      fit3 <- fit$fit3
+      XX <- input$ecx_TG249
+      drc_df1 <- data.frame(ED(fit1, c(XX),interval = "delta",display=FALSE),"Slope"=coefficients(fit1)[[1]]) 
+      drc_df2 <- data.frame(ED(fit2, c(XX),interval = "delta",display=FALSE),"Slope"=coefficients(fit2)[[1]])
+      drc_df3 <- data.frame(ED(fit3, c(XX),interval = "delta",display=FALSE),"Slope"=coefficients(fit3)[[1]]) 
+      colnames(drc_df1) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      colnames(drc_df3) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+      drc_df <- rbind(drc_df1,drc_df2, drc_df3)
+      rownames(drc_df) <- c('almarBlue','CFDA-AM','Neutral Red')
     }
     drc_df
     }
@@ -422,6 +462,22 @@ server <- function(input, output, session) {
            ylim=c(0,1), col="black",cex=2,cex.axis =2, cex.lab=2)
       legend("topleft",inset=0.05, legend = c("24 h","48 h","72 h","96 h"), col = c("black","#D55E00","tomato","black"), lty = c("dotted","solid","dotted","solid"),cex=2)
     }
+    else if(intest_type() == 'TG249') {
+      fit <- fitmodel()
+      fit1 <- fit$fit1
+      fit2 <- fit$fit2
+      fit3 <- fit$fit3
+      par(mar=c(5,5,2,2))
+      plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Cell viability", 
+           ylim=c(0,1),lty="solid",col="#0072B2",cex=2,cex.axis =2, cex.lab=2)
+      par(new=TRUE)
+      plot(fit2, log="x", broken=TRUE, xlab="", ylab="", main="",
+           ylim=c(0,1), lty="dotted",col="#009E73",cex=2,cex.axis =2, cex.lab=2)
+      par(new=TRUE)
+      plot(fit3, log="x", broken=TRUE, xlab="", ylab="", main="",
+           ylim=c(0,1), lty="solid", col="#D55E00",cex=2,cex.axis =2, cex.lab=2)
+      legend("topleft",inset=0.05, legend = c("almarBlue","CFDA-AM","Neutral Red"), col = c("#0072B2","#009E73","#D55E00"), lty = c("solid","dotted","solid"),cex=2)
+    }
     })
 
   
@@ -438,7 +494,8 @@ server <- function(input, output, session) {
    inmethod_218_development <- reactive({input$test_method_TG218_development})
    inmethod_235 <- reactive({input$test_method_TG235})
    inmethod_236 <- reactive({input$test_method_TG236})
-
+   inmethod_249 <- reactive({input$test_method_TG249})
+    
    # function of Steel's test, taken from https://www.trifields.jp/introducing-steel-in-r-1637
    steel.test <- function(x, ...) UseMethod("steel.test")
     
@@ -740,7 +797,31 @@ steel.test.formula <-
             list("Fisher's exact test for 24 h" = knitr::kable(Res1),"Fisher's exact test for 48 h" = knitr::kable(Res2))
             }
           }
-      })
+      else if(intest_type() == 'TG249'){
+          almarBlue_bg <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          CDFAAM_bg <- filedata() %>% dplyr::filter(DYE=="CDFAAM" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          NeutralRed_bg <- filedata() %>% dplyr::filter(DYE=="NeutralRed" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          almarBlue_ctrl <- almarBlue %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          CDFAAM_ctrl <- CDFAAM %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          NeutralRed_ctrl <- NeutralRed %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector 
+          almarBlue <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC!="CellFree") %>% mutate(FLUORESCENCE = (FLUORESCENCE- almarBlue_bg[[1]])/almarBlue_ctrl[[1]])
+          CDFAAM <- filedata() %>% dplyr::filter(DYE=="CDFAAM" & CONC!="CellFree")  %>% mutate(FLUORESCENCE = (FLUORESCENCE- CDFAAM_bg[[1]])/CDFAAM_ctrl[[1]])
+          NeutralRed <- filedata() %>% dplyr::filter(DYE=="NeutralRed" & CONC!="CellFree")  %>% mutate(FLUORESCENCE = (FLUORESCENCE- NeutralRed_bg[[1]])/NeutralRed_ctrl[[1]])
+          almarBlue$CONC <- as.factor(almarBlue$CONC)
+          CDFAAM$CONC <- as.factor(CDFAAM$CONC)
+          NeutralRed$CONC <- as.factor(NeutralRed$CONC)
+          if ( inmethod_249() =="Dunnett"){
+            fit1 <- aov( FLUORESCENCE ~ CONC, data = almarBlue  )
+            fit2 <- aov( FLUORESCENCE ~ CONC, data = CDFAAM )
+            fit3 <- aov( FLUORESCENCE ~ CONC, data = NeutralRed  )
+            Res1 <- summary (glht (fit1, linfct=mcp (CONC="Dunnett"), alternative="less"))  
+            Res2 <- summary (glht (fit2, linfct=mcp (CONC="Dunnett"), alternative="less"))  
+            Res3 <- summary (glht (fit3, linfct=mcp (CONC="Dunnett"), alternative="less"))  
+            list("Dunnett's test for almarBlue" = knitr::kable(Res1),"Dunnett's test for CFDA-FA" = knitr::kable(Res2),
+                 "Dunnett's test for Neutral Red" = knitr::kable(Res3))
+            }
+          }
+        })
     
     output$test_result <- renderPrint({
       TestResult()

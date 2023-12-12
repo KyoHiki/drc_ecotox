@@ -263,7 +263,7 @@ server <- function(input, output, session) {
           alamarBlue$CONC <- as.numeric(alamarBlue$CONC)
           CDFAAM$CONC <- as.numeric(CDFAAM$CONC)
           NeutralRed$CONC <- as.numeric(NeutralRed$CONC)
-          fit1 <- drm( FLUORESCENCE ~ CONC, data = almarBlue , fct = LL.2(), type="continuous")
+          fit1 <- drm( FLUORESCENCE ~ CONC, data = alamarBlue , fct = LL.2(), type="continuous")
           fit2 <- drm( FLUORESCENCE ~ CONC, data = CDFAAM, fct = LL.2(), type="continuous")
           fit3 <- drm( FLUORESCENCE ~ CONC, data = NeutralRed, fct = LL.2(), type="continuous")
         }

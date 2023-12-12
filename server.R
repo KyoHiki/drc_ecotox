@@ -269,7 +269,7 @@ server <- function(input, output, session) {
         }
       fit <- list(fit1 = fit1, fit2 = fit2, fit3=fit3)
       return(fit)
-  })
+  }
   
   
   # output of ECx estimate

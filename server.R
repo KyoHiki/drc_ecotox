@@ -254,9 +254,9 @@ server <- function(input, output, session) {
           alamarBlue_bg <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
           CDFAAM_bg <- filedata() %>% dplyr::filter(DYE=="CDFAAM" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
           NeutralRed_bg <- filedata() %>% dplyr::filter(DYE=="NeutralRed" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
-          alamarBlue_ctrl <- alamarBlue %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
-          CDFAAM_ctrl <- CDFAAM %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
-          NeutralRed_ctrl <- NeutralRed %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector 
+          alamarBlue_ctrl <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          CDFAAM_ctrl <- filedata() %>% dplyr::filter(DYE=="CDFAAM" & CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          NeutralRed_ctrl <- filedata() %>% dplyr::filter(DYE=="NeutralRed" & CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector 
           alamarBlue <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC!="CellFree") %>% mutate(FLUORESCENCE = (FLUORESCENCE- alamarBlue_bg[[1]])/alamarBlue_ctrl[[1]])
           CDFAAM <- filedata() %>% dplyr::filter(DYE=="CDFAAM" & CONC!="CellFree")  %>% mutate(FLUORESCENCE = (FLUORESCENCE- CDFAAM_bg[[1]])/CDFAAM_ctrl[[1]])
           NeutralRed <- filedata() %>% dplyr::filter(DYE=="NeutralRed" & CONC!="CellFree")  %>% mutate(FLUORESCENCE = (FLUORESCENCE- NeutralRed_bg[[1]])/NeutralRed_ctrl[[1]])
@@ -269,8 +269,8 @@ server <- function(input, output, session) {
         }
       fit <- list(fit1 = fit1, fit2 = fit2, fit3=fit3)
       return(fit)
-  }
-})
+    }
+  })
   
   
   # output of ECx estimate
@@ -368,7 +368,7 @@ server <- function(input, output, session) {
       colnames(drc_df2) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
       colnames(drc_df3) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
       drc_df <- rbind(drc_df1,drc_df2, drc_df3)
-      rownames(drc_df) <- c('almarBlue','CFDA-AM','Neutral Red')
+      rownames(drc_df) <- c('alamarBlue','CFDA-AM','Neutral Red')
     }
     drc_df
     }
@@ -477,7 +477,7 @@ server <- function(input, output, session) {
       par(new=TRUE)
       plot(fit3, log="x", broken=TRUE, xlab="", ylab="", main="",
            ylim=c(0,1), lty="solid", col="#D55E00",cex=2,cex.axis =2, cex.lab=2)
-      legend("topleft",inset=0.05, legend = c("almarBlue","CFDA-AM","Neutral Red"), col = c("#0072B2","#009E73","#D55E00"), lty = c("solid","dotted","solid"),cex=2)
+      legend("bottomleft",inset=0.05, legend = c("alamarBlue","CFDA-AM","Neutral Red"), col = c("#0072B2","#009E73","#D55E00"), lty = c("solid","dotted","solid"),cex=2)
     }
     })
 
@@ -799,27 +799,27 @@ steel.test.formula <-
             }
           }
       else if(intest_type() == 'TG249'){
-          almarBlue_bg <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+        if ( inmethod_249() =="Dunnett"){
+          alamarBlue_bg <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
           CDFAAM_bg <- filedata() %>% dplyr::filter(DYE=="CDFAAM" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
           NeutralRed_bg <- filedata() %>% dplyr::filter(DYE=="NeutralRed" & CONC=="CellFree") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
-          almarBlue_ctrl <- almarBlue %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
-          CDFAAM_ctrl <- CDFAAM %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
-          NeutralRed_ctrl <- NeutralRed %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector 
-          almarBlue <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC!="CellFree") %>% mutate(FLUORESCENCE = (FLUORESCENCE- almarBlue_bg[[1]])/almarBlue_ctrl[[1]])
+          alamarBlue_ctrl <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          CDFAAM_ctrl <- filedata() %>% dplyr::filter(DYE=="CDFAAM" & CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector
+          NeutralRed_ctrl <- filedata() %>% dplyr::filter(DYE=="NeutralRed" & CONC=="0") %>% summarize(Mean=mean(FLUORESCENCE)) %>% as.vector 
+          alamarBlue <- filedata() %>% dplyr::filter(DYE=="alamarBlue" & CONC!="CellFree") %>% mutate(FLUORESCENCE = (FLUORESCENCE- alamarBlue_bg[[1]])/alamarBlue_ctrl[[1]])
           CDFAAM <- filedata() %>% dplyr::filter(DYE=="CDFAAM" & CONC!="CellFree")  %>% mutate(FLUORESCENCE = (FLUORESCENCE- CDFAAM_bg[[1]])/CDFAAM_ctrl[[1]])
           NeutralRed <- filedata() %>% dplyr::filter(DYE=="NeutralRed" & CONC!="CellFree")  %>% mutate(FLUORESCENCE = (FLUORESCENCE- NeutralRed_bg[[1]])/NeutralRed_ctrl[[1]])
-          almarBlue$CONC <- as.factor(almarBlue$CONC)
-          CDFAAM$CONC <- as.factor(CDFAAM$CONC)
-          NeutralRed$CONC <- as.factor(NeutralRed$CONC)
-          if ( inmethod_249() =="Dunnett"){
-            fit1 <- aov( FLUORESCENCE ~ CONC, data = almarBlue  )
+          alamarBlue$CONC <- as.factor(as.numeric(alamarBlue$CONC) )
+          CDFAAM$CONC <- as.factor(as.numeric(CDFAAM$CONC))
+          NeutralRed$CONC <- as.factor(as.numeric(NeutralRed$CONC))
+            fit1 <- aov( FLUORESCENCE ~ CONC, data = alamarBlue  )
             fit2 <- aov( FLUORESCENCE ~ CONC, data = CDFAAM )
             fit3 <- aov( FLUORESCENCE ~ CONC, data = NeutralRed  )
             Res1 <- summary (glht (fit1, linfct=mcp (CONC="Dunnett"), alternative="less"))  
             Res2 <- summary (glht (fit2, linfct=mcp (CONC="Dunnett"), alternative="less"))  
             Res3 <- summary (glht (fit3, linfct=mcp (CONC="Dunnett"), alternative="less"))  
-            list("Dunnett's test for almarBlue" = knitr::kable(Res1),"Dunnett's test for CFDA-FA" = knitr::kable(Res2),
-                 "Dunnett's test for Neutral Red" = knitr::kable(Res3))
+            list("Dunnett's test for alamarBlue" = Res1,"Dunnett's test for CFDA-FA" = Res2,
+                 "Dunnett's test for Neutral Red" = Res3 )
             }
           }
         })

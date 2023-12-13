@@ -26,7 +26,7 @@ print(paste("Test chemical:",input$chemical))
   
 
 ## 1. Summary of input data
-```{r data, collapse=TRUE, echo=FALSE}
+```{r data, collapse=TRUE, echo=FALSE,warning=FALSE}
 # Check mean and sd at each concentration
 if(input$test_type == 'TG202' | input$test_type == 'TG235'){
   filedata()
@@ -41,12 +41,13 @@ dplyr::select(CONC,	TOTAL_mean,	TOTAL_sd, DEAD_mean,DEAD_sd,EMERGED_mean,EMERGED
   knitr::kable( round(summary_data,2) ) 
 } else if(input$test_type == 'TG249') {
   summary_data <- filedata() %>%
+   mutate(CONC=ifelse(CONC=="CellFree",-1,CONC)) %>%
    group_by(CONC,DYE) %>% 
    summarize_at(vars(FLUORESCENCE),.funs= c(mean,sd)) %>%
    rename(Mean = fn1, SD =fn2 ) %>%
-  pivot_wider(names_from=DYE,values_from=c(Mean,SD)) %>% mutate_at(vars(CONC),as.integer) %>% arrange(CONC)
-  knitr::kable( round(summary_data,2) ) 
-  print("NA: CEll free wells")
+   pivot_wider(names_from=DYE,values_from=c(Mean,SD)) %>% mutate_at(vars(CONC),as.integer) %>% arrange(CONC) %>% ungroup() %>%
+   mutate(CONC=ifelse(CONC=="-1","Cellfree",CONC)) %>% mutate_at(vars(-CONC),round)
+  knitr::kable( summary_data ) 
 }
 ```
 
@@ -221,35 +222,37 @@ knitr::kable( round(ECx(),2) )
       par(new=TRUE)
       plot(fit3, log="x", broken=TRUE, xlab="", ylab="", main="",
            ylim=c(0,1), lty="solid", col="#D55E00",cex=2,cex.axis =2, cex.lab=2)
-      legend("topleft",inset=0.05, legend = c("almarBlue","CFDA-AM","Neutral Red"), col = c("#0072B2","#009E73","#D55E00"), lty = c("solid","dotted","solid"),cex=2)
-}
+      legend("bottomleft",inset=0.05, legend = c("almarBlue","CFDA-AM","Neutral Red"), col = c("#0072B2","#009E73","#D55E00"), lty = c("solid","dotted","solid"),cex=1.1)
+    }
 ```
 
 ## 4. hypothesis testing
 ```{r hypothesis_testing,echo=FALSE}
 if(input$test_type == 'TG201'){
-}else if(input$test_type == 'TG203'){
-print("NOEC, an optional toxicity value, was estimated by Fisher's exact test with Bonferroni-Holm correction correction.")
-}else if(input$test_type == 'TG218'){
-  if(input$test_method_TG218_mortality=='CA'){
-     print("Mortality: analyzed by step-down Cochran-Armitage test")
-} else if(input$test_method_TG218_mortality=='Fisher'){
-     print("Mortality: analyzed by Fisher's exact test")
-}
-  if(input$test_method_TG218_emergence=='CA'){
-     print("Emergence ratio: analyzed by step-down Cochran-Armitage test")
-} else if(input$test_method_TG218_emergence=='Fisher'){
-     print("Emergence ratio: analyzed by Fisher's exact test")
-}
-  if(input$test_method_TG218_development=='Fisher'){
-     print("Development rate: analyzed by step-down Cochran-Armitage test")
-} else if(input$test_method_TG218_development=='Dunnett'){
-     print("Development rate: analyzed by Dunnett's test")
-}
-}else if(input$test_type == 'TG235'){
-print("NOEC, an optional toxicity value, was estimated by Fisher's exact test with Bonferroni-Holm correction correction.")
-}else if(input$test_method_TG249=='Dunnett'){
-print("CEll viability: analyzed by Dunnett's test")
+  }else if(input$test_type == 'TG203'){
+    print("NOEC, an optional toxicity value, was estimated by Fisher's exact test with Bonferroni-Holm correction correction.")
+    } else if(input$test_type == 'TG218'){
+      if(input$test_method_TG218_mortality=='CA'){
+        print("Mortality: analyzed by step-down Cochran-Armitage test")
+        } else if(input$test_method_TG218_mortality=='Fisher'){
+          print("Mortality: analyzed by Fisher's exact test")
+          }
+      if(input$test_method_TG218_emergence=='CA'){
+        print("Emergence ratio: analyzed by step-down Cochran-Armitage test")
+        } else if(input$test_method_TG218_emergence=='Fisher'){
+          print("Emergence ratio: analyzed by Fisher's exact test")
+          }
+      if(input$test_method_TG218_development=='Fisher'){
+        print("Development rate: analyzed by step-down Cochran-Armitage test")
+        } else if(input$test_method_TG218_development=='Dunnett'){
+          print("Development rate: analyzed by Dunnett's test")
+        }
+    } else if(input$test_type == 'TG235'){
+        print("NOEC, an optional toxicity value, was estimated by Fisher's exact test with Bonferroni-Holm correction correction.")
+    } else if(input$test_type == 'TG236'){
+        print("No hypothesis test was performed")
+    }  else if(input$test_type=='TG249'){
+      print("CEll viability: analyzed by Dunnett's test")
 }
 TestResult()
 ```

@@ -3,7 +3,7 @@
   
 
     
-# How to use
+# How to use 1: on your local PC
 Install and load the Shiny and other R packages in your R session and perform the following command:
 ```r
 # If necessary, install the following packages.
@@ -25,3 +25,6 @@ library(shiny)
 runGitHub("KyoHiki/drc_ecotox")
 ```
 
+    
+# How to use 2: through Cloud server
+Access: https://nies-ecotox.shinyapps.io/Shiny_io/

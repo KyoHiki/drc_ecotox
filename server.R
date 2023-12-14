@@ -83,8 +83,8 @@ server <- function(input, output, session) {
           fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.2(), type="binomial")        
         }
         else if(inmodel_202() == 'll3') {
-          fit1 <- drm( IMMOBILIZED/TOTAL~CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.3u(), type="binomial")
-          fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3u(), type="binomial") 
+          fit1 <- drm( IMMOBILIZED/TOTAL~CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.3(), type="binomial")
+          fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3(), type="binomial") 
         }
         else if(inmodel_202() == 'll4') {
           fit1 <- drm( IMMOBILIZED/TOTAL~CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.4(), type="binomial")
@@ -409,14 +409,14 @@ server <- function(input, output, session) {
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
       par(new=TRUE)
       plot(fit2, log="x", broken=TRUE, xlab="", ylab="", main="",
-           ylim=c(0,1), col="#D55E00",cex=2,cex.axis =2, cex.lab=2)
+           ylim=c(0,1), col="#0072B2",cex=2,cex.axis =2, cex.lab=2)
       par(new=TRUE)
       plot(fit3, log="x", broken=TRUE, xlab="", ylab="", main="",
            ylim=c(0,1), lty="dotted", col="tomato",cex=2,cex.axis =2, cex.lab=2)
       par(new=TRUE)
       plot(fit4, log="x", broken=TRUE, xlab="", ylab="", main="",
-           ylim=c(0,1), col="black",cex=2,cex.axis =2, cex.lab=2)
-      legend("topleft",inset=0.05, legend = c("24 h","48 h","72 h","96 h"), col = c("black","#D55E00","tomato","black"), lty = c("dotted","solid","dotted","solid"),cex=2)
+           ylim=c(0,1), col="black",cex=2,cex.axis =2, cex.lab=2,lwd=1.3)
+      legend("topleft",inset=0.05, legend = c("24 h","48 h","72 h","96 h"), col = c("black","#0072B2","tomato","black"), lty = c("dotted","solid","dotted","solid"),cex=2)
     }
       else if(intest_type() == 'TG218') {
       fit <- fitmodel()
@@ -454,14 +454,14 @@ server <- function(input, output, session) {
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
       par(new=TRUE)
       plot(fit2, log="x", broken=TRUE, xlab="", ylab="", main="",
-           ylim=c(0,1), col="#D55E00",cex=2,cex.axis =2, cex.lab=2)
+           ylim=c(0,1), col="#0072B2",cex=2,cex.axis =2, cex.lab=2)
       par(new=TRUE)
       plot(fit3, log="x", broken=TRUE, xlab="", ylab="", main="",
            ylim=c(0,1), lty="dotted", col="tomato",cex=2,cex.axis =2, cex.lab=2)
       par(new=TRUE)
       plot(fit4, log="x", broken=TRUE, xlab="", ylab="", main="",
-           ylim=c(0,1), col="black",cex=2,cex.axis =2, cex.lab=2)
-      legend("topleft",inset=0.05, legend = c("24 h","48 h","72 h","96 h"), col = c("black","#D55E00","tomato","black"), lty = c("dotted","solid","dotted","solid"),cex=2)
+           ylim=c(0,1), col="black",cex=2,cex.axis =2, cex.lab=2,lwd=1.3)
+      legend("topleft",inset=0.05, legend = c("24 h","48 h","72 h","96 h"), col = c("black","#0072B2","tomato","black"), lty = c("dotted","solid","dotted","solid"),cex=2)
     }
     else if(intest_type() == 'TG249') {
       fit <- fitmodel()

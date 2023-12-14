@@ -83,8 +83,8 @@ server <- function(input, output, session) {
           fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.2(), type="binomial")        
         }
         else if(inmodel_202() == 'll3') {
-          fit1 <- drm( IMMOBILIZED/TOTAL~CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.3(), type="binomial")
-          fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3(), type="binomial") 
+          fit1 <- drm( IMMOBILIZED/TOTAL~CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.3u(), type="binomial")
+          fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3u(), type="binomial") 
         }
         else if(inmodel_202() == 'll4') {
           fit1 <- drm( IMMOBILIZED/TOTAL~CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.4(), type="binomial")
@@ -101,10 +101,10 @@ server <- function(input, output, session) {
           fit4 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="96"), fct = LL.2(), type="binomial")
         }
       else if(inmodel_203() == 'll3') {
-          fit1 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.3(), type="binomial")
-          fit2 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3(), type="binomial")
-          fit3 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="72"), fct = LL.3(), type="binomial")
-          fit4 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="96"), fct = LL.3(), type="binomial")
+          fit1 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.3u(), type="binomial")
+          fit2 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3u(), type="binomial")
+          fit3 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="72"), fct = LL.3u(), type="binomial")
+          fit4 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="96"), fct = LL.3u(), type="binomial")
         }
           else if(inmodel_203() == 'll4') {
           fit1 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.4(), type="binomial")
@@ -235,10 +235,10 @@ server <- function(input, output, session) {
           fit4 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="96"), fct = LL.2(), type="binomial")
         }
       else if(inmodel_236() == 'll3') {
-          fit1 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.3(), type="binomial")
-          fit2 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3(), type="binomial")
-          fit3 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="72"), fct = LL.3(), type="binomial")
-          fit4 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="96"), fct = LL.3(), type="binomial")
+          fit1 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.3u(), type="binomial")
+          fit2 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3u(), type="binomial")
+          fit3 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="72"), fct = LL.3u(), type="binomial")
+          fit4 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="96"), fct = LL.3u(), type="binomial")
         }
           else if(inmodel_236() == 'll4') {
           fit1 <- drm( DEAD/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.4(), type="binomial")

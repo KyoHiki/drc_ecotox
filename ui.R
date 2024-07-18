@@ -85,6 +85,7 @@ progress::-moz-progress-bar {
                                                    "Daphnia: TG202" = "TG202",
                                                    "Fish: TG203" = "TG203",
                                                    "Chironomus: TG218,219" = "TG218",
+                                                   "Lemna: TG221" = "TG221",
                                                    "Chironomus: TG235" = "TG235",
                                                    "Fish embryo: TG236" = "TG236",
                                                    "Fish cell: TG249" = "TG249"),

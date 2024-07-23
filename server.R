@@ -69,11 +69,21 @@ server <- function(input, output, session) {
   ## model fitting
   fitmodel <- eventReactive(input$buttonRunStep1,{
     if(intest_type() == 'TG201') {
+      growth_df <- filedata() %>% mutate( gr0to24 = log(H24 / H0),
+                                          gr24to48 = log(H48 / H24),
+                                          gr48to72 = log(H72 / H48),
+                                          gr0to72 = log(H72 / H0)/(3),
+                                          gr24to72 = log(H72 / H24)/(2) )
+      growth_ctrl <- growth_df %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(gr0to72)) %>% as.vector
         if(inmodel_201() == 'll2') {
-          fit <- drm( H72 ~ CONC, data = filedata() , fct = LL.2())
+          # from cell density to growth
+          fit <- drm( gr0to72 ~ CONC, data = growth_df , fct = LL.2(upper=growth_ctrl[[1]]), type="continuous")
         }
-        else if(inmodel_201() == 'll4') {
-          fit <- drm( H72 ~ CONC, data = filedata(), fct = LL.4())
+      else if(inmodel_201() == 'll3') {
+        fit <- drm( gr0to72 ~ CONC, data = growth_df, fct = LL.3(), type="continuous")
+      }
+      else if(inmodel_201() == 'll4') {
+        fit <- drm( gr0to72 ~ CONC, data = growth_df, fct = LL.4(),  type="continuous")
         }
       return(fit)
       }
@@ -273,11 +283,14 @@ server <- function(input, output, session) {
   })
   
   
+  
+  
   # output of ECx estimate
   ECx <- eventReactive(input$buttonRunStep1,{
     if(intest_type() == 'TG201') {
       XX <- input$ecx_TG201
-      drc_df <- data.frame(ED(fitmodel(), c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fitmodel())[[1]] )
+      fit <- fitmodel()
+      drc_df <- data.frame(ED(fit, c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fit)[[1]] )
       colnames(drc_df) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
       }
     else if(intest_type() == 'TG202') {
@@ -383,7 +396,7 @@ server <- function(input, output, session) {
   output$drc_plot <- renderPlot({
     if(intest_type() == 'TG201') {
       par(mar=c(5,9,2,2))
-      plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="",
+      plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Growth rate (/d)",
              cex=2,cex.axis =2, cex.lab=2)
       }
     else if(intest_type() == 'TG202') {
@@ -636,11 +649,25 @@ steel.test.formula <-
     
     TestResult <- eventReactive(input$buttonRunStep1,{
       if(intest_type() == 'TG201') {
-        data=filedata()
-        data$CONC <- as.factor(data$CONC)
-        fit <- lm( H72 ~ CONC, data = data )
-        Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
-        knitr::kable(Res)
+        growth_df <- filedata() %>% mutate( gr0to24 = log(H24 / H0),
+                                            gr24to48 = log(H48 / H24),
+                                            gr48to72 = log(H72 / H48),
+                                            gr0to72 = log(H72 / H0)/(3),
+                                            gr24to72 = log(H72 / H24)/(2) )
+        growth_df$CONC <- as.factor(growth_df$CONC)
+        Res_variance <- bartlett.test(gr0to72~CONC, data=growth_df)
+        Note<- c("If p < 0.05, the assumption that variances are equal across groups is rejected. Steel's test is recommended")
+        if ( inmethod_201() =="Dunnett"){
+          fit <- aov( gr0to72~CONC, data = growth_df )
+          Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
+          list("Bartlett's test for growth rate" = Res_variance, "Note for Bartlett's test" = Note,
+               "Dunnett's test for growth rate" = Res)
+        } else if ( inmethod_201() =="Steel"){
+          Res <- steel.test(gr0to72 ~ CONC, data = growth_df, control = "0", alternative="less") %>%
+            mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))        
+          list("Bartlett's test for growth rate" = Res_variance, "Note for Bartlett's test" = Note,
+               "Steel's test for growth rate" = Res)
+        }
         } 
       else if(intest_type() == "TG203") {
           if ( inmethod_203() =="Fisher"){
@@ -693,6 +720,7 @@ steel.test.formula <-
           data=filedata()
           data$CONC <- as.factor(data$CONC)
           Res_variance <- bartlett.test(DEVELOPMENT~CONC, data=data)
+          Note<- c("If p < 0.05, the assumption that variances are equal across groups is rejected. Steel's test is recommended")
           if( inmethod_218_mortality() =="CA"){
             　　data_CA <- data %>% group_by(CONC) %>% summarize(DEAD= sum(DEAD),TOTAL=sum(TOTAL))  
                 Res1 <- data.frame(CONC = data_CA$CONC, TOTAL=data_CA$TOTAL, DEAD=data_CA$DEAD)
@@ -762,7 +790,7 @@ steel.test.formula <-
                mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))        
           }
       list("Mortality" = knitr::kable(Res1), "Emergence ratio" = knitr::kable(Res2), 
-           "Bartlett's test for development rate (DR)" = Res_variance, "Development rate" = Res3 )
+           "Bartlett's test for development rate (DR)" = Res_variance, "Note for Bartlett's test"=Note,"Development rate" = Res3 )
       }
       else if(intest_type() == 'TG235'){
           data=filedata()

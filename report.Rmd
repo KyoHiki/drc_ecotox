@@ -28,7 +28,25 @@ print(paste("Test chemical:",input$chemical))
 ## 1. Summary of input data
 ```{r data, collapse=TRUE, echo=FALSE,warning=FALSE}
 # Check mean and sd at each concentration
-if(input$test_type == 'TG202' | input$test_type == 'TG235'){
+if (input$test_type == 'TG201'){
+  Mean_data <- filedata() %>%
+    mutate( gr0to24 = log(H24 / H0),
+            gr24to48 = log(H48 / H24),
+            gr48to72 = log(H72 / H48),
+            gr0to72 = log(H72 / H0)/(3),
+            gr24to72 = log(H72 / H24)/(2) ) %>%
+   group_by(CONC) %>% 
+   summarize_at(vars(-"DATAID"),.funs= c(mean)) 
+  SD_data <- filedata() %>%
+    mutate( gr0to24 = log(H24 / H0),
+            gr24to48 = log(H48 / H24),
+            gr48to72 = log(H72 / H48),
+            gr0to72 = log(H72 / H0)/(3),
+            gr24to72 = log(H72 / H24)/(2) ) %>%
+   group_by(CONC) %>% 
+   summarize_at(vars(-"DATAID"),.funs= c(sd)) 
+  list( "Mean" = knitr::kable( Mean_data ),  "SD"=  knitr::kable( SD_data ) )
+}else if(input$test_type == 'TG202' | input$test_type == 'TG235'){
   filedata()
 }else if(input$test_type == 'TG203' | input$test_type == 'TG236') {
   filedata() 
@@ -57,6 +75,8 @@ dplyr::select(CONC,	TOTAL_mean,	TOTAL_sd, DEAD_mean,DEAD_sd,EMERGED_mean,EMERGED
 if(input$test_type == 'TG201'){
   if(input$model_TG201 =='ll2'){
   print("Selected model: Log-logistic 2 parameters")
+  } else if (input$model_TG201 =='ll3'){
+    print("Selected model: Log-logistic 3 parameters")
   } else if (input$model_TG201 =='ll4'){
     print("Selected model: Log-logistic 4 parameters")
   }
@@ -133,7 +153,7 @@ knitr::kable( round(ECx(),2) )
 ```{r plot, collapse=TRUE, echo=FALSE }
  if(input$test_type == 'TG201') {
       par(mar=c(5,9,2,2),mgp=c(3, 1, 0))
-      plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="",
+      plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Growth rate (/d)",
              cex=2,cex.axis =2, cex.lab=2)
       } else if(input$test_type == 'TG202') {
       fit <- fitmodel()
@@ -226,11 +246,22 @@ knitr::kable( round(ECx(),2) )
     }
 ```
 
-## 4. hypothesis testing
+## 4. Hypothesis testing
 ```{r hypothesis_testing,echo=FALSE}
 if(input$test_type == 'TG201'){
+        if(input$test_method_TG201=='Dunnett'){
+          print("Growth rate: analyzed by Dunnett's test")
+          print("summary (glht (fit, linfct=mcp (CONC='Dunnett'), alternative='less'))")
+        } else if(input$test_method_TG201=='Steel'){
+          print("Growth rate: analyzed by Steel's test")
+          print('steel.test(gr0to72 ~ CONC, data = growth_df, control = "0", alternative="less")')
+          print("Steel's test: 'https://www.trifields.jp/introducing-steel-in-r-1637'")
+          }
   }else if(input$test_type == 'TG203'){
     print("NOEC, an optional toxicity value, was estimated by Fisher's exact test with Bonferroni-Holm correction correction.")
+    print('fisher <- function(a,b,c,d){ dt <- matrix(c(a,b,c,d),ncol=2)')
+    print('c(pvalue = fisher.test(dt)$p.value)}')
+    print('pvalue <- fisher(DEAD,TOTAL-DEAD, DEAD_ctrl,TOTAL_ctrl-DEAD_ctrl))' )
     } else if(input$test_type == 'TG218'){
       if(input$test_method_TG218_mortality=='CA'){
         print("Mortality: analyzed by step-down Cochran-Armitage test")
@@ -246,13 +277,20 @@ if(input$test_type == 'TG201'){
         print("Development rate: analyzed by step-down Cochran-Armitage test")
         } else if(input$test_method_TG218_development=='Dunnett'){
           print("Development rate: analyzed by Dunnett's test")
+        } else if(input$test_method_TG218_development=='Steel'){
+          print("Development rate: analyzed by Steel's test")
         }
     } else if(input$test_type == 'TG235'){
         print("NOEC, an optional toxicity value, was estimated by Fisher's exact test with Bonferroni-Holm correction correction.")
+        print( 'fisher <- function(a,b,c,d){ dt <- matrix(c(a,b,c,d),ncol=2)')
+        print( 'c(pvalue = fisher.test(dt)$p.value)}')
+        print( 'pvalue <- fisher(IMMOBILIZED,TOTAL-IMMOBILIZED, IMMOBILIZED_ctrl,TOTAL_ctrl-IMMOBILIZED_ctrl))' )
     } else if(input$test_type == 'TG236'){
         print("No hypothesis test was performed")
     }  else if(input$test_type=='TG249'){
       print("CEll viability: analyzed by Dunnett's test")
+      print("fit3 <- aov( FLUORESCENCE ~ CONC, data = NeutralRed  )")
+      print( 'Res1 <- summary (glht (fit3, linfct=mcp (CONC="Dunnett"), alternative="less"))') 
 }
 TestResult()
 ```

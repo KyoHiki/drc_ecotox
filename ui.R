@@ -114,9 +114,11 @@ progress::-moz-progress-bar {
                             br(),
                             radioButtons('test_method_TG201',
                                          'Select hypothesis testing method',
-                                         choices = c('Dunnett test' = 'Dunnett'),
-                                         selected = 'Dunnett')
-                            ),
+                                         choices = c("Dunnett's test" = 'Dunnett',
+                                                     "Steel's test" = 'Steel'),
+                                         selected = 'Dunnett'),
+                            h5("You can see the bartlett's test result for homogenity of variance of growth rate, and then select testing method.")
+                          ),
                           
                           ###### For daphnia (TG202)
                           conditionalPanel(

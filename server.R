@@ -12,6 +12,8 @@ server <- function(input, output, session) {
   inmodel_218_mortality <- reactive({input$model_TG218_mortality})
   inmodel_218_emergence <- reactive({input$model_TG218_emergence})
   inmodel_218_development <- reactive({input$model_TG218_development})
+  inmodel_221 <- reactive({input$model_TG221})
+  inendpoint_201 <- reactive({input$endpoint_TG221})
   inmodel_235 <- reactive({input$model_TG235})
   inmodel_236 <- reactive({input$model_TG236})
   inmodel_249 <- reactive({input$model_TG249})
@@ -45,6 +47,11 @@ server <- function(input, output, session) {
         validateFile(input$datafile_TG218)
         ff <- input$datafile_TG218
         read.csv(file=ff$datapath, header=TRUE)
+      }  else if(intest_type() == 'TG221') {
+          req(input$datafile_TG221)
+          validateFile(input$datafile_TG221)
+          ff <- input$datafile_TG221
+          read.csv(file=ff$datapath, header=TRUE)
       }  else if(intest_type() == 'TG235') {
         req(input$datafile_TG235)
         validateFile(input$datafile_TG235)
@@ -220,7 +227,26 @@ server <- function(input, output, session) {
         }
       fit <- list(fit1 = fit1, fit2 = fit2, fit3 = fit3)
       return(fit)
+    }
+    else if(intest_type() == 'TG221') {
+      # from frond number to growth
+      growth_df <- filedata() %>% mutate( gr0to3 = log(D3 / D0)/(3),
+                                          gr3to5 = log(D5 / D3)/(2),
+                                          gr5to7 = log(D7 / D5)/(2),
+                                          gr0to7 = log(D7 / D0)/(7),
+                                          gr3to7 = log(D7 / D3)/(4) )
+      growth_ctrl <- growth_df %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(gr0to7)) %>% as.vector
+      if(inmodel_201() == 'll2') {
+        fit <- drm( gr0to7 ~ CONC, data = growth_df , fct = LL.2(upper=growth_ctrl[[1]]), type="continuous")
       }
+      else if(inmodel_221() == 'll3') {
+        fit <- drm( gr0to7 ~ CONC, data = growth_df, fct = LL.3(), type="continuous")
+      }
+      else if(inmodel_221() == 'll4') {
+        fit <- drm( gr0to7 ~ CONC, data = growth_df, fct = LL.4(),  type="continuous")
+      }
+      return(fit)
+    }
     else if(intest_type() == 'TG235') {
         if(inmodel_235() == 'll2') {
           fit1 <- drm( IMMOBILIZED/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.2(), type="binomial")
@@ -338,6 +364,12 @@ server <- function(input, output, session) {
       drc_df <- rbind(drc_df1,drc_df2,drc_df3)
       rownames(drc_df) <- c('Mortality','Emergence ratio',"Development rate")
     }
+    if(intest_type() == 'TG221') {
+      XX <- input$ecx_TG221
+      fit <- fitmodel()
+      drc_df <- data.frame(ED(fit, c(XX),interval = "delta",display=FALSE), "Slope"=coefficients(fit)[[1]] )
+      colnames(drc_df) <- c(paste0('EC',XX), 'Standard Error', 'Lower 95%CI', 'Upper 95%CI','Slope')
+    }
     else if(intest_type() == 'TG235') {
       fit <- fitmodel()
       fit1 <- fit$fit1
@@ -443,6 +475,11 @@ server <- function(input, output, session) {
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
       plot(fit3, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Development rate",
            lty="dotted",cex=2,cex.axis =2, cex.lab=2)
+      }
+    else if(intest_type() == 'TG221') {
+      par(mar=c(5,9,2,2))
+      plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Growth rate (/d)",
+           cex=2,cex.axis =2, cex.lab=2)
     }
       else if(intest_type() == 'TG235') {
       fit <- fitmodel()
@@ -506,6 +543,7 @@ server <- function(input, output, session) {
    inmethod_218_mortality <- reactive({input$test_method_TG218_mortality})
    inmethod_218_emergence <- reactive({input$test_method_TG218_emergence})
    inmethod_218_development <- reactive({input$test_method_TG218_development})
+   inmethod_221 <- reactive({input$test_method_TG221})
    inmethod_235 <- reactive({input$test_method_TG235})
    inmethod_236 <- reactive({input$test_method_TG236})
    inmethod_249 <- reactive({input$test_method_TG249})
@@ -791,7 +829,28 @@ steel.test.formula <-
           }
       list("Mortality" = knitr::kable(Res1), "Emergence ratio" = knitr::kable(Res2), 
            "Bartlett's test for development rate (DR)" = Res_variance, "Note for Bartlett's test"=Note,"Development rate" = Res3 )
-      }
+        }
+      if(intest_type() == 'TG221') {
+        growth_df <- filedata() %>% mutate( gr0to3 = log(D3 / D0)/(3),
+                                            gr3to5 = log(D5 / D3)/(2),
+                                            gr5to7 = log(D7 / D5)/(2),
+                                            gr0to7 = log(D7 / D0)/(7),
+                                            gr3to7 = log(D7 / D3)/(4) )
+        growth_df$CONC <- as.factor(growth_df$CONC)
+        Res_variance <- bartlett.test(gr0to7~CONC, data=growth_df)
+        Note<- c("If p < 0.05, the assumption that variances are equal across groups is rejected. Steel's test is recommended")
+        if ( inmethod_221() =="Dunnett"){
+          fit <- aov( gr0to7~CONC, data = growth_df )
+          Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
+          list("Bartlett's test for growth rate" = Res_variance, "Note for Bartlett's test" = Note,
+               "Dunnett's test for growth rate" = Res)
+        } else if ( inmethod_221() =="Steel"){
+          Res <- steel.test(gr0to7 ~ CONC, data = growth_df, control = "0", alternative="less") %>%
+            mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))        
+          list("Bartlett's test for growth rate" = Res_variance, "Note for Bartlett's test" = Note,
+               "Steel's test for growth rate" = Res)
+        }
+      } 
       else if(intest_type() == 'TG235'){
           data=filedata()
           data$CONC <- as.factor(data$CONC)

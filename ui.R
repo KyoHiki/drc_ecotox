@@ -220,7 +220,40 @@ progress::-moz-progress-bar {
                                            "Steel's test" = 'Steel'),
                                          selected = 'Dunnett'),
                            h5("You can see the bartlett's test result for homogenity of variance of development rate, and then select testing method.")
-                            ),
+                            ), 
+                          
+                          ###### For Lemna (TG221)
+                          conditionalPanel(
+                            condition = "input.test_type == 'TG221'",
+                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
+                            fileInput('datafile_TG221',
+                                      'Select an input file',
+                                      accept = c('.csv')),
+                            h5("You can download an example file: ", a("here", href = "LemnaTG221Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'AlgaeTG201Data_sample.csv') ),
+                            br(),br(),
+                            radioButtons('endpoint_TG221',
+                                         'Select endpoints',
+                                         choices = c('Frond number' = 'Number',
+                                                     'Total frond area' = 'Area'),
+                                         selected = 'Number'),
+                            br(),
+                            radioButtons('model_TG221',
+                                         'Select fitting model',
+                                         choices = c('log-logistic 2 parameters' = 'll2',
+                                                     'log-logistic 3 parameters' = 'll3',
+                                                     'log-logistic 4 parameters' = 'll4'),
+                                         selected = 'll2'),
+                            br(),
+                            numericInput(inputId="ecx_TG221",label="Determine effect concentration X%",value=50,min=0,max=100),
+                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
+                            br(),
+                            radioButtons('test_method_TG221',
+                                         'Select hypothesis testing method',
+                                         choices = c("Dunnett's test" = 'Dunnett',
+                                                     "Steel's test" = 'Steel'),
+                                         selected = 'Dunnett'),
+                            h5("You can see the bartlett's test result for homogenity of variance of growth rate, and then select testing method.")
+                          ),
                           
                           ###### For chironomus (TG235)
                           conditionalPanel(

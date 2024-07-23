@@ -14,6 +14,8 @@ if(input$test_type == 'TG201'){
   print("Test No. 203: Fish, Acute Toxicity Test")
 } else if(input$test_type == 'TG218') {
   print("Test No. 218: Sediment-Water Chironomid Toxicity Using Spiked Sediment or Test No. 219: Sediment-Water Chironomid Toxicity Using Spiked Water")
+}else if(input$test_type == 'TG221') {
+  print("Test No. 221: Lemna sp. Growth Inhibition Test")
 } else if(input$test_type == 'TG235') {
   print("Test No. 235: Chironomus sp., Acute Immobilisation Test")
 }  else if(input$test_type == 'TG236') {
@@ -56,7 +58,25 @@ if (input$test_type == 'TG201'){
   summarize_at(vars(-BEAKER),.funs= c(mean,sd)) %>%
   rename(TOTAL_mean = TOTAL_fn1, TOTAL_sd =TOTAL_fn2, DEAD_mean = DEAD_fn1, DEAD_sd = DEAD_fn2, EMERGED_mean = EMERGED_fn1, EMERGED_sd = EMERGED_fn2,  DEVELOPMENT_mean = DEVELOPMENT_fn1, DEVELOPMENT_sd = DEVELOPMENT_fn2 ) %>%
 dplyr::select(CONC,	TOTAL_mean,	TOTAL_sd, DEAD_mean,DEAD_sd,EMERGED_mean,EMERGED_sd,DEVELOPMENT_mean,	DEVELOPMENT_sd)
-  knitr::kable( round(summary_data,2) ) 
+  knitr::kable( round(summary_data,2) )
+} else if (input$test_type == 'TG221'){
+  Mean_data <- filedata() %>%
+    mutate( gr0to3 = log(D3 / H0)/(3),
+            gr3to5 = log(D5 / D3)/(2),
+            gr5to7 = log(D7 / D5)/(2),
+            gr0to7 = log(D7 / D0)/(3),
+            gr3to7 = log(D7 / D3)/(4) ) %>%
+   group_by(CONC) %>% 
+   summarize_at(vars(-"DATAID"),.funs= c(mean)) 
+  SD_data <- filedata() %>%
+    mutate( gr0to3 = log(D3 / H0)/(3),
+            gr3to5 = log(D5 / D3)/(2),
+            gr5to7 = log(D7 / D5)/(2),
+            gr0to7 = log(D7 / D0)/(3),
+            gr3to7 = log(D7 / D3)/(4) )  %>%
+   group_by(CONC) %>% 
+   summarize_at(vars(-"DATAID"),.funs= c(sd)) 
+  list( "Mean" = knitr::kable( Mean_data ),  "SD"=  knitr::kable( SD_data ) )
 } else if(input$test_type == 'TG249') {
   summary_data <- filedata() %>%
    mutate(CONC=ifelse(CONC=="CellFree",-1,CONC)) %>%
@@ -125,6 +145,14 @@ if(input$test_type == 'TG201'){
     print("Selected model: Log-logistic 4 parameters for mortality, log-logistic 4 parameters for emergence ratio, and log-logistic 3 parameters for development rate")
   } else if(input$model_TG218_mortality == 'll4' & input$model_TG218_emergence == 'll4' & input$model_TG218_development == 'll4' ) {
     print("Selected model: Log-logistic 4 parameters for mortality, log-logistic 4 parameters for emergence ratio, and log-logistic 4 parameters for development rate")
+  }
+} else if(input$test_type == 'TG221'){
+  if(input$model_TG221 =='ll2'){
+  print("Selected model: Log-logistic 2 parameters")
+  } else if (input$model_TG221 =='ll3'){
+    print("Selected model: Log-logistic 3 parameters")
+  } else if (input$model_TG221 =='ll4'){
+    print("Selected model: Log-logistic 4 parameters")
   }
 } else if(input$test_type == 'TG235'){
   if(input$model_TG235 =='ll2'){
@@ -198,6 +226,9 @@ knitr::kable( round(ECx(),2) )
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =1.2, cex.lab=1.2)
       plot(fit3, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Development rate",
            lty="dotted",cex=2,cex.axis =1.2, cex.lab=1.2)
+    } else if(input$test_type == 'TG221') {
+      plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Growth rate (/d)",
+             cex=2,cex.axis =2, cex.lab=2)
     } else if(input$test_type == 'TG235') {
       fit <- fitmodel()
       fit1 <- fit$fit1
@@ -280,6 +311,15 @@ if(input$test_type == 'TG201'){
         } else if(input$test_method_TG218_development=='Steel'){
           print("Development rate: analyzed by Steel's test")
         }
+    } else if(input$test_type == 'TG221'){
+        if(input$test_method_TG221=='Dunnett'){
+          print("Growth rate: analyzed by Dunnett's test")
+          print("summary (glht (fit, linfct=mcp (CONC='Dunnett'), alternative='less'))")
+        } else if(input$test_method_TG221=='Steel'){
+          print("Growth rate: analyzed by Steel's test")
+          print('steel.test(gr0to7 ~ CONC, data = growth_df, control = "0", alternative="less")')
+          print("Steel's test: 'https://www.trifields.jp/introducing-steel-in-r-1637'")
+          }
     } else if(input$test_type == 'TG235'){
         print("NOEC, an optional toxicity value, was estimated by Fisher's exact test with Bonferroni-Holm correction correction.")
         print( 'fisher <- function(a,b,c,d){ dt <- matrix(c(a,b,c,d),ncol=2)')

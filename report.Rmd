@@ -28,26 +28,30 @@ print(paste("Test chemical:",input$chemical))
   
 
 ## 1. Summary of input data
-```{r data, collapse=TRUE, echo=FALSE,warning=FALSE}
+```{r data, collapse=TRUE, echo=FALSE,warning=FALSE,fig.width=5, fig.height=5}
 # Check mean and sd at each concentration
 if (input$test_type == 'TG201'){
   Mean_data <- filedata() %>%
-    mutate( gr0to24 = log(H24 / H0),
-            gr24to48 = log(H48 / H24),
-            gr48to72 = log(H72 / H48),
-            gr0to72 = log(H72 / H0)/(3),
-            gr24to72 = log(H72 / H24)/(2) ) %>%
-   group_by(CONC) %>% 
-   summarize_at(vars(-"DATAID"),.funs= c(mean)) 
+    group_by(CONC) %>%
+    summarize( gr0to24 = mean(log(H24 / H0)),
+            gr24to48 = mean(log(H48 / H24)),
+            gr48to72 = mean(log(H72 / H48)),
+            gr0to72 = mean(log(H72 / H0)/(3)),
+            gr24to72 = mean(log(H72 / H24)/(2) ) ) 
   SD_data <- filedata() %>%
-    mutate( gr0to24 = log(H24 / H0),
-            gr24to48 = log(H48 / H24),
-            gr48to72 = log(H72 / H48),
-            gr0to72 = log(H72 / H0)/(3),
-            gr24to72 = log(H72 / H24)/(2) ) %>%
-   group_by(CONC) %>% 
-   summarize_at(vars(-"DATAID"),.funs= c(sd)) 
-  list( "Mean" = knitr::kable( Mean_data ),  "SD"=  knitr::kable( SD_data ) )
+    group_by(CONC) %>%
+    summarize( gr0to24 = sd(log(H24 / H0)),
+            gr24to48 = sd(log(H48 / H24)),
+            gr48to72 = sd(log(H72 / H48)),
+            gr0to72 = sd(log(H72 / H0)/(3)),
+            gr24to72 = sd(log(H72 / H24)/(2) ) ) 
+  Mean <- filedata() %>%
+  pivot_longer(cols=3:6,names_to="Time", names_pattern="H(.*)") %>%
+    group_by(CONC,Time) %>% summarize(Value = mean(value)) %>%
+    mutate(Concentration = as.factor(CONC)) 
+  Fig <- plot(x=Mean$Time, y=Mean$Value, col=Mean$Concentration, cex=2,log="y",  xlab="Time (h)", ylab="Biomass or its surrogate")
+  #legend("topleft", legend = unique(Mean$Concentration),col=unique(Mean$Concentration),pch=1,cex=1.7, inset=0.05)
+  list( "Raw" = knitr::kable(filedata()) , "Growth rate: Mean" = knitr::kable( round(Mean_data,2) ),  "Growth rate: SD"=  knitr::kable( round(SD_data,2) ) )
 }else if(input$test_type == 'TG202' | input$test_type == 'TG235'){
   filedata()
 }else if(input$test_type == 'TG203' | input$test_type == 'TG236') {
@@ -61,22 +65,26 @@ dplyr::select(CONC,	TOTAL_mean,	TOTAL_sd, DEAD_mean,DEAD_sd,EMERGED_mean,EMERGED
   knitr::kable( round(summary_data,2) )
 } else if (input$test_type == 'TG221'){
   Mean_data <- filedata() %>%
-    mutate( gr0to3 = log(D3 / H0)/(3),
-            gr3to5 = log(D5 / D3)/(2),
-            gr5to7 = log(D7 / D5)/(2),
-            gr0to7 = log(D7 / D0)/(3),
-            gr3to7 = log(D7 / D3)/(4) ) %>%
-   group_by(CONC) %>% 
-   summarize_at(vars(-"DATAID"),.funs= c(mean)) 
+    group_by(CONC) %>%
+    summarize( gr0to3 = mean(log(D3 / D0)/(3)),
+            gr3to5 = mean(log(D5 / D3)/(2)),
+            gr5to7 = mean(log(D7 / D5)/(2)),
+            gr0to7 = mean(log(D7 / D0)/(7)),
+            gr3to7 = mean(log(D7 / D3)/(4)) ) 
   SD_data <- filedata() %>%
-    mutate( gr0to3 = log(D3 / H0)/(3),
-            gr3to5 = log(D5 / D3)/(2),
-            gr5to7 = log(D7 / D5)/(2),
-            gr0to7 = log(D7 / D0)/(3),
-            gr3to7 = log(D7 / D3)/(4) )  %>%
-   group_by(CONC) %>% 
-   summarize_at(vars(-"DATAID"),.funs= c(sd)) 
-  list( "Mean" = knitr::kable( Mean_data ),  "SD"=  knitr::kable( SD_data ) )
+    group_by(CONC) %>%
+    summarize( gr0to3 = sd(log(D3 / D0)/(3)),
+            gr3to5 = sd(log(D5 / D3)/(2)),
+            gr5to7 = sd(log(D7 / D5)/(2)),
+            gr0to7 = sd(log(D7 / D0)/(7)),
+            gr3to7 = sd(log(D7 / D3)/(4)) ) 
+  Mean <- filedata() %>%
+    pivot_longer(cols=3:6,names_to="Time", names_pattern="D(.*)") %>%
+    group_by(CONC,Time) %>% summarize(Value = mean(value)) %>%
+    mutate(Concentration = as.factor(CONC)) 
+  Fig <- plot(x=Mean$Time, y=Mean$Value, col=Mean$Concentration, cex=2,log="y",  xlab="Time (days)", ylab="Biomass or its surrogate")
+  #legend("topleft", legend = unique(Mean$Concentration),col=unique(Mean$Concentration),pch=1,cex=1.7, inset=0.05)
+  list( "Raw" = knitr::kable(filedata()), "Growth rate: Mean" = knitr::kable( round(Mean_data,2) ),  "Growth rate: SD"=  knitr::kable( round(SD_data,2) ) )
 } else if(input$test_type == 'TG249') {
   summary_data <- filedata() %>%
    mutate(CONC=ifelse(CONC=="CellFree",-1,CONC)) %>%
@@ -178,16 +186,16 @@ knitr::kable( round(ECx(),2) )
 ```
 
 ## 3. Dose-response plot
-```{r plot, collapse=TRUE, echo=FALSE }
+```{r plot, collapse=TRUE, echo=FALSE ,fig.width=6.3, fig.height=5}
  if(input$test_type == 'TG201') {
-      par(mar=c(5,9,2,2),mgp=c(3, 1, 0))
+      par(mar=c(5,10,2,2),mgp=c(3.5, 1, 0),oma=c(0.5,0.5,0.5,0.5))
       plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Growth rate (/d)",
              cex=2,cex.axis =2, cex.lab=2)
       } else if(input$test_type == 'TG202') {
       fit <- fitmodel()
       fit1 <- fit$fit1
       fit2 <- fit$fit2
-      par(mar=c(5,9,2,2),mgp=c(3, 1, 0))
+      par(mar=c(5,10,2,2),mgp=c(3.5, 1, 0),oma=c(0.5,0.5,0.5,0.5))
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality", 
            ylim=c(0,1),lty="dotted",cex=1.5,cex.axis =1.5, cex.lab=1.5)
       par(new=TRUE)
@@ -200,7 +208,7 @@ knitr::kable( round(ECx(),2) )
       fit2 <- fit$fit2
       fit3 <- fit$fit3
       fit4 <- fit$fit4
-      par(mar=c(5,9,2,2),mgp=c(3, 1, 0))
+      par(mar=c(5,10,2,2),mgp=c(3.5, 1, 0),oma=c(0.5,0.5,0.5,0.5))
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality", 
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =1.5, cex.lab=1.5)
       par(new=TRUE)
@@ -218,7 +226,7 @@ knitr::kable( round(ECx(),2) )
       fit1 <- fit$fit1
       fit2 <- fit$fit2
       fit3 <- fit$fit3
-#　　 par(mar=c(5,5,2,2), mfrow=c(3,1),mgp=c(3, 1, 0) )
+#　　 par(mar=c(5,8,2,2), mfrow=c(3,1),mgp=c(3, 1, 0) )
       knitr::opts_chunk$set(fig.width=6, fig.height=19) 
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality",
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =1.2, cex.lab=1.2)
@@ -227,13 +235,14 @@ knitr::kable( round(ECx(),2) )
       plot(fit3, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Development rate",
            lty="dotted",cex=2,cex.axis =1.2, cex.lab=1.2)
     } else if(input$test_type == 'TG221') {
+      par(mar=c(5,10,2,2),mgp=c(3.5, 1, 0),oma=c(0.5,0.5,0.5,0.5))
       plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Growth rate (/d)",
              cex=2,cex.axis =2, cex.lab=2)
     } else if(input$test_type == 'TG235') {
       fit <- fitmodel()
       fit1 <- fit$fit1
       fit2 <- fit$fit2
-      par(mar=c(5,9,2,2),mgp=c(3, 1, 0))
+      par(mar=c(5,8,2,2),mgp=c(3, 1, 0))
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Immobility",
            ylim=c(0,1),lty="dotted",cex=1.5,cex.axis =1.5, cex.lab=1.5)
       par(new=TRUE)
@@ -246,7 +255,7 @@ knitr::kable( round(ECx(),2) )
       fit2 <- fit$fit2
       fit3 <- fit$fit3
       fit4 <- fit$fit4
-      par(mar=c(5,9,2,2),mgp=c(3, 1, 0))
+      par(mar=c(5,8,2,2),mgp=c(3, 1, 0))
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality", 
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =1.5, cex.lab=1.5)
       par(new=TRUE)
@@ -264,7 +273,7 @@ knitr::kable( round(ECx(),2) )
       fit1 <- fit$fit1
       fit2 <- fit$fit2
       fit3 <- fit$fit3
-      par(mar=c(5,5,2,2))
+      par(mar=c(5,8,2,2))
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Cell viability", 
            ylim=c(0,1),lty="solid",col="#0072B2",cex=2,cex.axis =2, cex.lab=2)
       par(new=TRUE)

@@ -236,7 +236,7 @@ server <- function(input, output, session) {
                                           gr0to7 = log(D7 / D0)/(7),
                                           gr3to7 = log(D7 / D3)/(4) )
       growth_ctrl <- growth_df %>% dplyr::filter(CONC=="0") %>% summarize(Mean=mean(gr0to7)) %>% as.vector
-      if(inmodel_201() == 'll2') {
+      if(inmodel_221() == 'll2') {
         fit <- drm( gr0to7 ~ CONC, data = growth_df , fct = LL.2(upper=growth_ctrl[[1]]), type="continuous")
       }
       else if(inmodel_221() == 'll3') {
@@ -427,7 +427,7 @@ server <- function(input, output, session) {
 
   output$drc_plot <- renderPlot({
     if(intest_type() == 'TG201') {
-      par(mar=c(5,9,2,2))
+      par(mar=c(5,8,2,2))
       plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Growth rate (/d)",
              cex=2,cex.axis =2, cex.lab=2)
       }
@@ -435,7 +435,7 @@ server <- function(input, output, session) {
       fit <- fitmodel()
       fit1 <- fit$fit1
       fit2 <- fit$fit2
-      par(mar=c(5,5,2,2))
+      par(mar=c(5,8,2,2))
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality", 
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
       par(new=TRUE)
@@ -449,7 +449,7 @@ server <- function(input, output, session) {
       fit2 <- fit$fit2
       fit3 <- fit$fit3
       fit4 <- fit$fit4
-      par(mar=c(5,5,2,2))
+      par(mar=c(5,8,2,2))
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality", 
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
       par(new=TRUE)
@@ -477,7 +477,7 @@ server <- function(input, output, session) {
            lty="dotted",cex=2,cex.axis =2, cex.lab=2)
       }
     else if(intest_type() == 'TG221') {
-      par(mar=c(5,9,2,2))
+      par(mar=c(5,8,2,2))
       plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Growth rate (/d)",
            cex=2,cex.axis =2, cex.lab=2)
     }
@@ -485,7 +485,7 @@ server <- function(input, output, session) {
       fit <- fitmodel()
       fit1 <- fit$fit1
       fit2 <- fit$fit2
-      par(mar=c(5,5,2,2))
+      par(mar=c(5,8,2,2))
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Immobility",
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
       par(new=TRUE)
@@ -499,7 +499,7 @@ server <- function(input, output, session) {
       fit2 <- fit$fit2
       fit3 <- fit$fit3
       fit4 <- fit$fit4
-      par(mar=c(5,5,2,2))
+      par(mar=c(5,8,2,2))
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality", 
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
       par(new=TRUE)
@@ -518,7 +518,7 @@ server <- function(input, output, session) {
       fit1 <- fit$fit1
       fit2 <- fit$fit2
       fit3 <- fit$fit3
-      par(mar=c(5,5,2,2))
+      par(mar=c(5,8,2,2))
       plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Cell viability", 
            ylim=c(0,1),lty="solid",col="#0072B2",cex=2,cex.axis =2, cex.lab=2)
       par(new=TRUE)
@@ -754,25 +754,25 @@ steel.test.formula <-
             list("24 h" = knitr::kable(Res1), "48 h" = knitr::kable(Res2),"72 h" = knitr::kable(Res3), "96 h" = knitr::kable(Res4) )
             }
         }
-        else if(intest_type() == 'TG218'){
+      else if(intest_type() == 'TG218'){
           data=filedata()
           data$CONC <- as.factor(data$CONC)
           Res_variance <- bartlett.test(DEVELOPMENT~CONC, data=data)
           Note<- c("If p < 0.05, the assumption that variances are equal across groups is rejected. Steel's test is recommended")
           if( inmethod_218_mortality() =="CA"){
-            　　data_CA <- data %>% group_by(CONC) %>% summarize(DEAD= sum(DEAD),TOTAL=sum(TOTAL))  
-                Res1 <- data.frame(CONC = data_CA$CONC, TOTAL=data_CA$TOTAL, DEAD=data_CA$DEAD)
-                LENGTH <- nrow(data_CA)
-          　　  for (i in 3:LENGTH){
-　　　　　　　　　　 Res1[i,4]<-  prop.trend.test(data_CA[1:i,]$DEAD, data_CA[1:i,]$TOTAL)$statistic
-                   Res1[i,5]<-  prop.trend.test(data_CA[1:i,]$DEAD, data_CA[1:i,]$TOTAL)$p.value
-                  　}
-                colnames(Res1) <-c("CONC","TOTAL","DEAD","Chi_squared","pvalue")
-                Res1 <- Res1 %>%
+            data_CA <- data %>% group_by(CONC) %>% summarize(DEAD= sum(DEAD),TOTAL=sum(TOTAL))  
+            Res1 <- data.frame(CONC = data_CA$CONC, TOTAL=data_CA$TOTAL, DEAD=data_CA$DEAD)
+            LENGTH <- nrow(data_CA)
+          　for (i in 3:LENGTH){
+　　　　　　　 Res1[i,4]<-  prop.trend.test(data_CA[1:i,]$DEAD, data_CA[1:i,]$TOTAL)$statistic
+               Res1[i,5]<-  prop.trend.test(data_CA[1:i,]$DEAD, data_CA[1:i,]$TOTAL)$p.value
+               }
+            colnames(Res1) <-c("CONC","TOTAL","DEAD","Chi_squared","pvalue")
+            Res1 <- Res1 %>%
                   mutate(Asterisk=  ifelse(pvalue<0.05,ifelse(pvalue>0.01,"*","**"),"" )) 
             } else if ( inmethod_218_mortality() =="Fisher"){
               data_F =filedata() %>% group_by(CONC) %>%
-                summarize(TOTAL=sum(TOTAL),DEAD=sum(DEAD)) %>% ungroup
+              summarize(TOTAL=sum(TOTAL),DEAD=sum(DEAD)) %>% ungroup
               TOTAL <- data_F  %>% dplyr::filter(CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
               DEAD_ctrl <- data_F %>% dplyr::filter(CONC=="0") %>% dplyr::select(DEAD) %>% as.numeric()
               data2 <- data_F %>% mutate(TOTAL_ctrl = TOTAL, DEAD_ctrl =DEAD_ctrl) %>%  dplyr::filter(CONC!="0")
@@ -798,7 +798,7 @@ steel.test.formula <-
                 colnames(Res2) <-c("CONC","TOTAL","EMERGED","Chi_squared","pvalue")
                 Res2 <- Res2 %>%
                   mutate(Asterisk=  ifelse(pvalue<0.05,ifelse(pvalue>0.01,"*","**"),"" )) 
-            } else if ( inmethod_218_emergence() =="Fisher"){
+                } else if ( inmethod_218_emergence() =="Fisher"){
               data_F_emer =filedata() %>% group_by(CONC) %>%
                 summarize(TOTAL=sum(TOTAL),EMERGED=sum(EMERGED)) %>% ungroup
               TOTAL <- data_F_emer %>% dplyr::filter(CONC=="0") %>% dplyr::select(TOTAL) %>% as.numeric()
@@ -814,40 +814,39 @@ steel.test.formula <-
                 mutate(pvalue = fisher(EMERGED,TOTAL-EMERGED, EMER_ctrl,TOTAL_ctrl-EMER_ctrl)) %>% ungroup() %>%
                 mutate(p_adjusted = p.adjust(pvalue,"holm")) %>%
                 mutate(Asterisk = ifelse(p_adjusted<0.05,ifelse(p_adjusted>0.01,"*","**"),"" ))
-          }
-          if ( inmethod_218_development() =="Dunnett"){
+              }
+         if ( inmethod_218_development() =="Dunnett"){
             data_raw=filedata()
             data_raw$CONC <- as.factor(data_raw$CONC)
             fit <- aov( DEVELOPMENT ~ CONC, data = data_raw  )
             Res3 <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
-            list("Bartlett's test for development rate (DR)" = Res_variance, "Dunnett's test for DR" = Res3)
             } else if ( inmethod_218_development() =="Steel"){
             data_raw=filedata()
             data_raw$CONC <- as.factor(data_raw$CONC)
             Res3 <- steel.test(DEVELOPMENT ~ CONC, data = data_raw, control = "0",alternative="less") %>%
-               mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))        
+              mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))        
+            }
+          list("Mortality" = knitr::kable(Res1), "Emergence ratio" = knitr::kable(Res2), 
+               "Bartlett's test for development rate (DR)" = Res_variance, "Note for Bartlett's test"=Note,"Development rate" = Res3 )
           }
-      list("Mortality" = knitr::kable(Res1), "Emergence ratio" = knitr::kable(Res2), 
-           "Bartlett's test for development rate (DR)" = Res_variance, "Note for Bartlett's test"=Note,"Development rate" = Res3 )
-        }
-      if(intest_type() == 'TG221') {
-        growth_df <- filedata() %>% mutate( gr0to3 = log(D3 / D0)/(3),
+      else if(intest_type() == 'TG221') {
+            growth_df <- filedata() %>% mutate( gr0to3 = log(D3 / D0)/(3),
                                             gr3to5 = log(D5 / D3)/(2),
                                             gr5to7 = log(D7 / D5)/(2),
                                             gr0to7 = log(D7 / D0)/(7),
                                             gr3to7 = log(D7 / D3)/(4) )
-        growth_df$CONC <- as.factor(growth_df$CONC)
-        Res_variance <- bartlett.test(gr0to7~CONC, data=growth_df)
-        Note<- c("If p < 0.05, the assumption that variances are equal across groups is rejected. Steel's test is recommended")
-        if ( inmethod_221() =="Dunnett"){
-          fit <- aov( gr0to7~CONC, data = growth_df )
-          Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
-          list("Bartlett's test for growth rate" = Res_variance, "Note for Bartlett's test" = Note,
+            growth_df$CONC <- as.factor(growth_df$CONC)
+            Res_variance <- bartlett.test(gr0to7~CONC, data=growth_df)
+            Note<- c("If p < 0.05, the assumption that variances are equal across groups is rejected. Steel's test is recommended")
+            if ( inmethod_221() =="Dunnett"){
+              fit <- aov( gr0to7~CONC, data = growth_df )
+              Res <- summary (glht (fit, linfct=mcp (CONC="Dunnett"), alternative="less")) 
+              list("Bartlett's test for growth rate" = Res_variance, "Note for Bartlett's test" = Note,
                "Dunnett's test for growth rate" = Res)
-        } else if ( inmethod_221() =="Steel"){
-          Res <- steel.test(gr0to7 ~ CONC, data = growth_df, control = "0", alternative="less") %>%
-            mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))        
-          list("Bartlett's test for growth rate" = Res_variance, "Note for Bartlett's test" = Note,
+              } else if ( inmethod_221() =="Steel"){
+                Res <- steel.test(gr0to7 ~ CONC, data = growth_df, control = "0", alternative="less") %>%
+                  mutate(Asterisk = ifelse(p.value<0.05,ifelse(p.value>0.01,"*","**"),"" ))        
+                list("Bartlett's test for growth rate" = Res_variance, "Note for Bartlett's test" = Note,
                "Steel's test for growth rate" = Res)
         }
       } 

@@ -230,7 +230,7 @@ progress::-moz-progress-bar {
                             fileInput('datafile_TG221',
                                       'Select an input file',
                                       accept = c('.csv')),
-                            h5("You can download an example file: ", a("here", href = "LemnaTG221Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'AlgaeTG201Data_sample.csv') ),
+                            h5("You can download an example file: ", a("here", href = "LemnaTG221Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'LemnaTG221Data_sample.csv') ),
                             br(),br(),
                             radioButtons('endpoint_TG221',
                                          'Select endpoints',

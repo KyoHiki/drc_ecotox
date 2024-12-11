@@ -104,8 +104,8 @@ server <- function(input, output, session) {
           fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, weights=TOTAL, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3(), type="binomial") 
         }
         else if(inmodel_202() == 'll4') {
-          fit1 <- drm( IMMOBILIZED/TOTAL~CONC, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.4(), type="binomial")
-          fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.4(), type="binomial") 
+          fit1 <- drm( IMMOBILIZED/TOTAL~CONC, weights=TOTAL, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.4(), type="binomial")
+          fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, weights=TOTAL, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.4(), type="binomial") 
         }
       fit <- list(fit1 = fit1, fit2 = fit2)
       return(fit)

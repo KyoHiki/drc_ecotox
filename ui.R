@@ -40,16 +40,20 @@ progress::-moz-progress-bar {
     )),
   
   titlePanel(
-    tags$head(tags$link(rel = "icon", type = "image/png", href = "Logo.png"), tags$title("Logo"))
+    tags$head(tags$link(rel = "icon", type = "image/png", href = "Logo_2.png"), tags$title("Logo"))
   ),
   br(),
   
   navbarPage(title = "", 
-             tabPanel(img(src = "Logo.png", title = "Logo", width = 150),
+             tabPanel(img(src = "Logo_2.png", title = "Logo", width = 50),
                       
                       fluidRow(
                         br(), br(), 
-                        HTML("<center><font face=verdana size=6 color=#009E73>Welcome to the drc-ecotox application</font></center>"),
+                        div(
+                          style = "display: flex; align-items: center; justify-content: center;",
+                          img(src = "Logo_2.png", title = "Logo", width = 100, style = "margin-right: 15px;"), # Logo
+                          HTML("<font face=verdana size=6 color=#009E73><b>  Welcome to ShinyEcotox  </b></font>"," ") # title
+                        ),
                         br(), br(),
                         fixedRow(column(8, offset = 1,
                                         tags$blockquote("'drc-ecotox' is a freely available tool for dose-response (or concentration-response) characterization from standardized ecotoxicity data.",
@@ -76,12 +80,12 @@ progress::-moz-progress-bar {
              ####################################################################################
              ####### Data upload & analysis #####################################################
              ####################################################################################
-             tabPanel(HTML("<font face=verdana size=4 color=#009E73>Analysis</font>"),
+             tabPanel(HTML("<font face=verdana size=6 color=#009E73>Analysis</font>"),
                       br(), HTML("<font face=verdana size=5 color=#009E73><b>Upload and analyze ecotoxicity data</b></font>"), br(), br(), br(),
                       fixedRow(
                         ###### Select type of data                                
                         sidebarPanel(
-                          style = "background-color: #009E73;",
+                          style = "background-color: #009E73; font-size:18px",
                           width = 3,
                           selectInput('test_type', 
                                        "Select test type",
@@ -371,7 +375,7 @@ progress::-moz-progress-bar {
              ####################################################################################
              ####### Report   ###################################################################
              ####################################################################################
-             tabPanel(HTML("<font face=verdana size=4 color=#009E73>Download report </font>"),
+             tabPanel(HTML("<font face=verdana size=6 color=#009E73>Download report </font>"),
                       fixedRow(
                         column(8, 
                                br(), HTML("<font face=verdana size=5 color=#009E73><b>Download the analysis report</b></font>"),

@@ -56,11 +56,11 @@ progress::-moz-progress-bar {
                         ),
                         br(), br(),
                         fixedRow(column(8, offset = 1,
-                                        tags$blockquote("'drc-ecotox' is a freely available tool for dose-response (or concentration-response) characterization from standardized ecotoxicity data.",
+                                        tags$blockquote("'ShinyEcotox' is an online tool for the analysis of standardized ecotoxicity data.",
                                                         br(), 
                                                         "This application helps the users to make a plot of dose-response curve, estimate effect concentrations (ECx), and estimate no observed effect concentrations (NOEC).", br(), 
                                                          br(), 
-                                                        "「drc-ecotox」はOECDテストガイドラインなどの標準化された生態毒性試験のデータを解析するためのツールです。",
+                                                        "「ShinyEcotox」はOECDテストガイドラインなどの標準化された生態毒性試験のデータを解析するためのオンラインツールです。",
                                                         br(), 
                                                         "主に濃度-応答関係の解析やECxの算出、無影響濃度（NOEC）の算出などが可能です。",
                                                         style="text-align:justify;")
@@ -80,7 +80,7 @@ progress::-moz-progress-bar {
              ####################################################################################
              ####### Data upload & analysis #####################################################
              ####################################################################################
-             tabPanel(HTML("<font face=verdana size=6 color=#009E73>Analysis</font>"),
+             tabPanel(HTML("<font face=verdana size=5 color=#009E73>Analysis</font>"),
                       br(), HTML("<font face=verdana size=5 color=#009E73><b>Upload and analyze ecotoxicity data</b></font>"), br(), br(), br(),
                       fixedRow(
                         ###### Select type of data                                
@@ -375,7 +375,7 @@ progress::-moz-progress-bar {
              ####################################################################################
              ####### Report   ###################################################################
              ####################################################################################
-             tabPanel(HTML("<font face=verdana size=6 color=#009E73>Download report </font>"),
+             tabPanel(HTML("<font face=verdana size=5 color=#009E73>Download report </font>"),
                       fixedRow(
                         column(8, 
                                br(), HTML("<font face=verdana size=5 color=#009E73><b>Download the analysis report</b></font>"),

@@ -100,8 +100,8 @@ server <- function(input, output, session) {
           fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, weights=TOTAL, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.2(), type="binomial")        
         }
         else if(inmodel_202() == 'll3') {
-          fit1 <- drm( IMMOBILIZED/TOTAL~CONC, weights=TOTAL, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.3(), type="binomial")
-          fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, weights=TOTAL, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3(), type="binomial") 
+          fit1 <- drm( IMMOBILIZED/TOTAL~CONC, weights=TOTAL, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.3u(), type="binomial")
+          fit2 <- drm( IMMOBILIZED/TOTAL ~ CONC, weights=TOTAL, data = filedata() %>% dplyr::filter(TIME=="48"), fct = LL.3u(), type="binomial") 
         }
         else if(inmodel_202() == 'll4') {
           fit1 <- drm( IMMOBILIZED/TOTAL~CONC, weights=TOTAL, data = filedata() %>% dplyr::filter(TIME=="24"), fct = LL.4(), type="binomial")
@@ -436,7 +436,7 @@ server <- function(input, output, session) {
       fit1 <- fit$fit1
       fit2 <- fit$fit2
       par(mar=c(5,8,2,2))
-      plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Mortality", 
+      plot(fit1, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Immobility", 
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =2, cex.lab=2)
       par(new=TRUE)
       plot(fit2, log="x", broken=TRUE, xlab="", ylab="", main="",

@@ -1,5 +1,5 @@
 # ShinyEcotox
-"ShinyEcotox" is a freely available tool for dose-response analysis of standradized ecotoxicity tests. "ShinyEcotox" is based on R and the "drc", "multcomp", and "shiny" R packages.
+"ShinyEcotox" is a freely available tool for analysis of standradized ecotoxicity tests. "ShinyEcotox" is based on R and the "drc", "multcomp", and "shiny" R packages.
   
 
     

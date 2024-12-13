@@ -1,5 +1,16 @@
+i18n <- Translator$new(translation_json_path = "inst/i18n/translation.json")
+i18n$set_translation_language("en")
+
+
 server <- function(input, output, session) {
+  lang <- reactiveVal("en")
   
+  observeEvent(input$lang_en, {
+    lang("en")
+  })
+  observeEvent(input$lang_ja, {
+    lang("ja")
+  })
   
   ####################################################################################
   ####### Data upload & analysis #####################################################
@@ -21,7 +32,7 @@ server <- function(input, output, session) {
   validateFile <- function(filename){
     extFile <- tools::file_ext(filename)
     validate(
-      need(extFile == "csv", "Only csv files are allowed.")
+      need(extFile == "csv", i18n$translate("Only csv files are allowed."))
     )
   }
   
@@ -69,6 +80,365 @@ server <- function(input, output, session) {
         read.csv(file=ff$datapath, header=TRUE)
       }
   })
+  
+  ## Side bar
+  output$analysis_title <- renderUI({
+    i18n$set_translation_language(lang())
+    HTML(paste0("<font face=verdana size=5 color=#009E73><b>",
+                i18n$translate("Upload and analyze ecotoxicity data"),
+                "</b></font>"))
+  })
+  
+  output$select_test_type_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    selectInput('test_type', 
+                i18n$translate("Select test type"),
+                choices = c("Algae: TG201" = "TG201",
+                            "Daphnia: TG202" = "TG202",
+                            "Fish: TG203" = "TG203",
+                            "Chironomus: TG218,219" = "TG218",
+                            "Lemna: TG221" = "TG221",
+                            "Chironomus: TG235" = "TG235",
+                            "Fish embryo: TG236" = "TG236",
+                            "Fish cell: TG249" = "TG249"),
+                selected = "TG201")
+  })
+  
+  output$chemical_name_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    textInput("chemical", i18n$translate("Chemical name"), value = "Chemical")
+  })
+  output$conc_unit_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    selectInput("conc_unit", i18n$translate("Concentration unit"), 
+                choices = c("g/L", "mg/L", "µg/L", "ng/L"))
+  })
+    
+  
+  output$tg201_input_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    fileInput('datafile_TG201',
+              i18n$translate("Select an input file"),
+              accept = c('.csv'))
+  })
+  output$tg201_example_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    h5(
+      i18n$translate("You can download a template file: "),
+      a("here", href = "AlgaeTG201Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'AlgaeTG201Data_sample.csv'),
+      style = "font-size:23px;"
+    )
+  })
+  output$tg201_select_model_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('model_TG201',
+                 i18n$translate("Select fitting model"),
+                 choices = c('log-logistic 2 parameters' = 'll2',
+                             'log-logistic 3 parameters' = 'll3',
+                             'log-logistic 4 parameters' = 'll4'),
+                 selected = 'll2')
+  })
+  output$tg201_determine_ecx_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    numericInput("ecx_TG201",
+                 i18n$translate("Determine effect concentration X%"),
+                 value=50, min=0, max=100)
+  })
+  output$tg201_select_hypothesis_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('test_method_TG201',
+                 i18n$translate("Select hypothesis testing method"),
+                 choices = c("Dunnett's test" = 'Dunnett',
+                             "Steel's test" = 'Steel'),
+                 selected = 'Dunnett')
+  })
+  output$tg201_bartlett_note_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    h5(i18n$translate("You can see the bartlett's test result for homogenity of variance, and then select testing method."))
+  })
+  
+  output$tg202_input_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    fileInput('datafile_TG202',
+              i18n$translate("Select an input file"),
+              accept = c('.csv'))
+  })
+  output$tg202_example_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    h5(
+      i18n$translate("You can download a template file: "),
+      a("here", href = "DaphniaTG202Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'DaphniaTG202Data_sample.csv'),
+      style = "font-size:23px;"
+    )
+  })
+  output$tg202_select_model_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('model_TG202',
+                 i18n$translate("Select fitting model"),
+                 choices = c('log-logistic 2 parameters' = 'll2',
+                             'log-logistic 3 parameters' = 'll3',
+                             'log-logistic 4 parameters' = 'll4'),
+                 selected = 'll2')
+  })
+  output$tg202_determine_ecx_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    numericInput("ecx_TG202",
+                 i18n$translate("Determine effect concentration X%"),
+                 value=50, min=0, max=100)
+  })
+  output$tg202_select_hypothesis_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    HTML(paste0("<size=2><b>",
+                i18n$translate("Select hypothesis testing method"),"</b></font>"))
+  })
+  output$tg202_no_need_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    h5(i18n$translate("No need to perform a hypothesis testing."))
+  })
+  
+  
+  output$tg203_example_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    h5(
+      i18n$translate("You can download a template file: "),
+      a("here", href = "FishTG203Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'FishTG203Data_sample.csv'),
+      style = "font-size:23px;"
+    )
+  })
+  output$tg203_input_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    fileInput('datafile_TG203',
+              i18n$translate("Select an input file"),
+              accept = c('.csv'))
+  })  
+  output$tg203_select_model_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('model_TG203',
+                 i18n$translate("Select fitting model"),
+                 choices = c('log-logistic 2 parameters' = 'll2',
+                             'log-logistic 3 parameters' = 'll3',
+                             'log-logistic 4 parameters' = 'll4'),
+                 selected = 'll2')
+  })
+  output$tg203_determine_ecx_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    numericInput("ecx_TG203",
+                 i18n$translate("Determine effect concentration X%"),
+                 value=50, min=0, max=100)
+  })
+  output$tg203_select_hypothesis_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('test_method_TG203',
+                 i18n$translate("Select hypothesis testing method"),
+                 choices = c("Fisher's exact test with BH correction" = 'Fisher'),
+                 selected = 'Fisher')
+  })
+  
+  output$tg218_input_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    fileInput('datafile_TG218',
+              i18n$translate("Select an input file"),
+              accept = c('.csv'))
+  })
+  output$tg218_example_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    h5(
+      i18n$translate("You can download a template file: "),
+      a("here", href = "ChironomusTG218Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'ChironomusTG218Data_sample.csv'),
+      style = "font-size:23px;"
+    )
+  })
+  output$tg218_select_model_mortality_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('model_TG218_mortality',
+                 i18n$translate("Select fitting model for mortality"),
+                 choices = c('log-logistic 2 parameters' = 'll2',
+                             'log-logistic 3 parameters' = 'll3',
+                             'log-logistic 4 parameters' = 'll4'),
+                 selected = 'll2')
+  })
+  output$tg218_select_model_emergence_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('model_TG218_emergence',
+                 i18n$translate("Select fitting model for emergence"),
+                 choices = c('log-logistic 2 parameters' = 'll2',
+                             'log-logistic 3 parameters' = 'll3',
+                             'log-logistic 4 parameters' = 'll4'),
+                 selected = 'll2')
+  })
+  output$tg218_select_model_development_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('model_TG218_development',
+                 i18n$translate("Select fitting model for development rate"),
+                 choices = c('log-logistic 3 parameters' = 'll3',
+                             'log-logistic 4 parameters' = 'll4'),
+                 selected = 'll3')
+  })
+  output$tg218_determine_ecx_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    numericInput("ecx_TG218",
+                 i18n$translate("Determine effect concentration X%"),
+                 value = 50, min=0, max=100)
+  })
+  output$tg218_select_hypothesis_mortality_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('test_method_TG218_mortality',
+                 i18n$translate("Select hypothesis testing method for mortality"),
+                 choices = c("Cochran-Armitage test" = 'CA',
+                             "Fisher's exact test with BH correction" = 'Fisher'),
+                 selected = 'CA')
+  })
+  output$tg218_select_hypothesis_emergence_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('test_method_TG218_emergence',
+                 i18n$translate("Select hypothesis testing method for emergence"),
+                 choices = c("Cochran-Armitage test" = 'CA',
+                             "Fisher's exact test with BH correction" = 'Fisher'),
+                 selected = 'CA')
+  })
+  output$tg218_select_hypothesis_development_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('test_method_TG218_development',
+                 i18n$translate("Select hypothesis testing method for development rate"),
+                 choices = c("Dunnett's test" = 'Dunnett',
+                             "Steel's test" = 'Steel'),
+                 selected = 'Dunnett')
+  })
+  output$tg218_bartlett_note_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    h5(i18n$translate("You can see the bartlett's test result for homogenity of variance, and then select testing method."))
+  })
+  
+  
+  output$tg235_example_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    h5(
+      i18n$translate("You can download a template file: "),
+      a("here", href = "ChironomusTG235Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'ChironomusTG235Data_sample.csv'),
+      style = "font-size:23px;"
+    )
+  })
+  output$tg235_input_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    fileInput('datafile_TG235',
+              i18n$translate("Select an input file"),
+              accept = c('.csv'))
+  })  
+  output$tg235_select_model_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('model_TG235',
+                 i18n$translate("Select fitting model"),
+                 choices = c('log-logistic 2 parameters' = 'll2',
+                             'log-logistic 3 parameters' = 'll3',
+                             'log-logistic 4 parameters' = 'll4'),
+                 selected = 'll2')
+  })
+  output$tg235_determine_ecx_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    numericInput("ecx_TG235",
+                 i18n$translate("Determine effect concentration X%"),
+                 value=50, min=0, max=100)
+  })
+  output$tg235_select_hypothesis_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('test_method_TG235',
+                 i18n$translate("Select hypothesis testing method"),
+                 choices = c("Fisher's exact test with BH correction" = 'Fisher'),
+                 selected = 'Fisher')
+  })
+  
+  
+  output$tg236_input_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    fileInput('datafile_TG236',
+              i18n$translate("Select an input file"),
+              accept = c('.csv'))
+  })
+  output$tg236_example_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    h5(
+      i18n$translate("You can download a template file: "),
+      a("here", href = "FishEmbryoTG236Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'FishEmbryoTG236Data_sample.csv'),
+      style = "font-size:23px;"
+    )
+  })
+  output$tg236_select_model_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('model_TG236',
+                 i18n$translate("Select fitting model"),
+                 choices = c('log-logistic 2 parameters' = 'll2',
+                             'log-logistic 3 parameters' = 'll3',
+                             'log-logistic 4 parameters' = 'll4'),
+                 selected = 'll2')
+  })
+  output$tg236_determine_ecx_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    numericInput("ecx_TG236",
+                 i18n$translate("Determine effect concentration X%"),
+                 value=50, min=0, max=100)
+  })
+  output$tg236_select_hypothesis_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    HTML(paste0("<size=2><b>",
+                i18n$translate("Select hypothesis testing method"),"</b></font>"))
+  })
+  output$tg236_no_need_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    h5(i18n$translate("No need to perform a hypothesis testing."))
+  })
+
+  
+  output$tg249_example_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    h5(
+      i18n$translate("You can download a template file: "),
+      a("here", href = "FishCellTG249Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'FishCellTG249Data_sample.csv'),
+      style = "font-size:23px;"
+    )
+  })
+  output$tg249_input_file_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    fileInput('datafile_TG249',
+              i18n$translate("Select an input file"),
+              accept = c('.csv'))
+  })  
+  output$tg249_select_model_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('model_TG249',
+                 i18n$translate("Select fitting model"),
+                 choices = c('log-logistic 2 parameters' = 'll2',
+                             'log-logistic 3 parameters' = 'll3',
+                             'log-logistic 4 parameters' = 'll4'),
+                 selected = 'll2')
+  })
+  output$tg249_determine_ecx_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    numericInput("ecx_TG249",
+                 i18n$translate("Determine effect concentration X%"),
+                 value=50, min=0, max=100)
+  })
+  output$tg249_select_hypothesis_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons('test_method_TG249',
+                 i18n$translate("Select hypothesis testing method"),
+                 choices = c("Dunnett's test" = 'Dunnett'),
+                 selected = 'Dunnett')
+  })
+  
+  
+  output$download_title <- renderUI({
+    i18n$set_translation_language(lang())
+    HTML(paste0("<font face=verdana size=5 color=#009E73><b>",
+                i18n$translate("Download the analysis report"),
+                "</b></font>"))
+  })
+  
+  output$report_format_ui <- renderUI({
+    i18n$set_translation_language(lang())
+    radioButtons("format",i18n$translate("Select report format"), c('Word'), inline = TRUE)
+    })
+  
+  
   
   ## Output : print raw data
   output$rawdata <- DT::renderDataTable({filedata()})

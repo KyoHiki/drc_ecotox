@@ -8,13 +8,18 @@ library(here)
 library(rmarkdown)
 library(shinyjs)
 library(shinycssloaders)
+library(shiny.i18n)
+
+i18n <- Translator$new(translation_json_path = "inst/i18n/translation.json")
+i18n$set_translation_language("en")
+
 
 ui <- fluidPage(
   useShinyjs(),
   tags$head(
     tags$style(
       HTML(".shiny-notification {
-              height: 100px;
+              height: 80px;
               width: 500px;
               position:fixed;
               top: calc(50%);
@@ -28,24 +33,53 @@ ui <- fluidPage(
               background-color: #999999;
               value: #eee;
             }
+            .navbar {
+              background-color: #b3b3b3;
+              border-color: #b3b3b3;
+              min-height: 40px; 
+              margin-bottom: 0; 
+            }
+             .navbar-brand {
+             height: 50px;
+             padding-top: 5px;
+             padding-bottom: 5px;
+             }
+             .navbar-nav > li > a {
+             line-height: 50px;
+             height: 50px;
+             padding-top: 0;
+             padding-bottom: 0;
+             }
             progress::-webkit-progress-value { 
-  background-color: #999999; 
+            background-color: #999999; 
             } 
-progress::-moz-progress-bar { 
-  background-color: #999999; 
-} 
-           ",
-           lang = "en"
+            progress::-moz-progress-bar { 
+            background-color: #999999; 
+            } 
+           "
       )
     )),
+  
+  tags$ul(class = "nav navbar-nav navbar-right",
+          tags$li(
+            style = "margin-right:7px; margin-top:7px;",
+            actionButton("lang_en", "English", class = "btn-xs")
+          ),
+          tags$li(
+            style = "margin-right:7px; margin-top:7px;",
+            actionButton("lang_ja", "Japanese", class = "btn-xs")
+          )
+  ),
   
   titlePanel(
     tags$head(tags$link(rel = "icon", type = "image/png", href = "Logo_2.png"), tags$title("Logo"))
   ),
   br(),
   
+
+  
   navbarPage(title = "", 
-             tabPanel(img(src = "Logo_2.png", title = "Logo", width = 50),
+             tabPanel(img(src = "Logo_2.png", title = "Logo", width = 40, height=40),
                       
                       fluidRow(
                         br(), br(), 
@@ -81,158 +115,85 @@ progress::-moz-progress-bar {
              ####### Data upload & analysis #####################################################
              ####################################################################################
              tabPanel(HTML("<font face=verdana size=5 color=#009E73>Analysis</font>"),
-                      br(), HTML("<font face=verdana size=5 color=#009E73><b>Upload and analyze ecotoxicity data</b></font>"), br(), br(), br(),
+                      br(), uiOutput("analysis_title"),
+                      br(), br(), 
                       fixedRow(
                         ###### Select type of data                                
                         sidebarPanel(
-                          style = "background-color: #009E73; font-size:18px",
+                          style = "background-color: #009E73",
                           width = 3,
-                          selectInput('test_type', 
-                                       "Select test type",
-                                       choices = c("Algae: TG201" = "TG201",
-                                                   "Daphnia: TG202" = "TG202",
-                                                   "Fish: TG203" = "TG203",
-                                                   "Chironomus: TG218,219" = "TG218",
-                                                   "Lemna: TG221" = "TG221",
-                                                   "Chironomus: TG235" = "TG235",
-                                                   "Fish embryo: TG236" = "TG236",
-                                                   "Fish cell: TG249" = "TG249"),
-                                       selected = "TG201"),
-                          textInput(inputId = "chemical", "Input the name of test chemical",value="Chemical"),
-                          selectInput("conc_unit", "Concentration Unit", 
-                                      choices = c("g/L", "mg/L", "µg/L", "ng/L")),
+                          uiOutput("select_test_type_ui"),
+                          uiOutput("chemical_name_ui"),
+                          uiOutput("conc_unit_ui"),
                           ###### For algae (TG201)
                           conditionalPanel(
                             condition = "input.test_type == 'TG201'",
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                            fileInput('datafile_TG201',
-                                      'Select an input file',
-                                      accept = c('.csv')),
-                            h5("You can download an example file: ", a("here", href = "AlgaeTG201Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'AlgaeTG201Data_sample.csv'), 
-                               style = "font-size:23px;" ),
-                            br(),br(),
-                            radioButtons('model_TG201',
-                                         'Select fitting model',
-                                         choices = c('log-logistic 2 parameters' = 'll2',
-                                                     'log-logistic 3 parameters' = 'll3',
-                                                     'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll2'),
                             br(),
-                            numericInput(inputId="ecx_TG201",label="Determine effect concentration X%",value=50,min=0,max=100),
+                            uiOutput("tg201_example_file_ui"),br(),
+                            uiOutput("tg201_input_file_ui"),
+                            br(), 
+                            uiOutput("tg201_select_model_ui"),
+                            br(),
+                            uiOutput("tg201_determine_ecx_ui"),
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
                             br(),
-                            radioButtons('test_method_TG201',
-                                         'Select hypothesis testing method',
-                                         choices = c("Dunnett's test" = 'Dunnett',
-                                                     "Steel's test" = 'Steel'),
-                                         selected = 'Dunnett'),
-                            h5("You can see the bartlett's test result for homogenity of variance of growth rate, and then select testing method.")
+                            uiOutput("tg201_select_hypothesis_ui"),
+                            uiOutput("tg201_bartlett_note_ui")
                           ),
                           
                           ###### For daphnia (TG202)
                           conditionalPanel(
                             condition = "input.test_type == 'TG202'",
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                            fileInput('datafile_TG202',
-                                      'Select an input file',
-                                      accept = c('.csv')),
-                            h5("You can download an example file: ", a("here", href = "DaphniaTG202Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;", download = 'DaphniaTG202Data_sample.csv'),
-                               style = "font-size:23px;"),
                             br(),
+                            uiOutput("tg202_example_file_ui"),br(),
+                            uiOutput("tg202_input_file_ui"),
+                            br(), 
+                            uiOutput("tg202_select_model_ui"),
                             br(),
-                            radioButtons('model_TG202',
-                                         'Select fitting model',
-                                         choices = c('log-logistic 2 parameters' = 'll2',
-                                                     'log-logistic 3 parameters' = 'll3',
-                                                     'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll2'),
+                            uiOutput("tg202_determine_ecx_ui"),
+                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
                             br(),
-                            numericInput(inputId="ecx_TG202",label="Determine effect concentration X%",value=50,min=0,max=100),
-                            br(),
-                            HTML("<b><size=2>Select hypothesis testing method</font></b>"),
-                            h5('No need to perform a hypothesis testing for TG202')
-                            ),
+                            uiOutput("tg202_select_hypothesis_ui"),
+                            uiOutput("tg202_no_need_ui")
+                          ),
                           
                           ###### For fish (TG203)
                           conditionalPanel(
                             condition = "input.test_type == 'TG203'",
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                            fileInput('datafile_TG203',
-                                      'Select an input file',
-                                      accept = c('.csv')),
-                            h5("You can download an example file: ", 
-                               a("here", href = "FishTG203Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;",
-                                 download = 'FishTG203Data_sample.csv'),
-                               style = "font-size:23px;"),
                             br(),
+                            uiOutput("tg203_example_file_ui"),br(),
+                            uiOutput("tg203_input_file_ui"),
+                            br(), 
+                            uiOutput("tg203_select_model_ui"),
                             br(),
-                            radioButtons('model_TG203',
-                                         'Select fitting model',
-                                         choices = c('log-logistic 2 parameters' = 'll2',
-                                                     'log-logistic 3 parameters' = 'll3',
-                                                     'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll2'),
-                            br(),
-                            numericInput(inputId="ecx_TG203",label="Determine effect concentration X%",value=50,min=0,max=100),
-                            br(),
+                            uiOutput("tg203_determine_ecx_ui"),
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                            radioButtons('test_method_TG203',
-                                         'Select hypothesis testing method',
-                                         choices = c("Fisher's exact test with BH correction" = 'Fisher'),
-                                         selected = 'Fisher')
+                            br(),
+                            uiOutput("tg203_select_hypothesis_ui"),
                             ),
                           
                           ###### For chironomus (TG218,219)
                           conditionalPanel(
                             condition = "input.test_type == 'TG218'",
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                            fileInput('datafile_TG218',
-                                      'Select an input file',
-                                      accept = c('.csv')),
-                            h5("You can download an example file: ", 
-                               a("here", href = "ChironomusTG218Data_sample.csv", TARGET = "_blank",style="text-decoration:underline;",
-                                 download = 'ChironomusTG218Data_sample.csv'),
-                               style = "font-size:23px;"),
+                            uiOutput("tg218_example_file_ui"),br(),
+                            uiOutput("tg218_input_file_ui"),
+                            br(), br(),
+                            uiOutput("tg218_select_model_mortality_ui"),
+                            uiOutput("tg218_select_model_emergence_ui"),
+                            uiOutput("tg218_select_model_development_ui"),
                             br(),
-                            br(),
-                            radioButtons('model_TG218_mortality',
-                                         'Select fitting model for mortality',
-                                         choices = c('log-logistic 2 parameters' = 'll2',
-                                                     'log-logistic 3 parameters' = 'll3',
-                                                     'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll2'),
-                            radioButtons('model_TG218_emergence',
-                                         'Select fitting model for emergence',
-                                         choices = c('log-logistic 2 parameters' = 'll2',
-                                                     'log-logistic 3 parameters' = 'll3',
-                                                     'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll2'),
-                            radioButtons('model_TG218_development',
-                                         'Select fitting model for development rate',
-                                         choices = c('log-logistic 3 parameters' = 'll3',
-                                                     'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll3'),
-                            br(),
-                            numericInput(inputId="ecx_TG218",label="Determine effect concentration X%",value=50,min=0,max=100),
-                            br(),br(),
+                            uiOutput("tg218_determine_ecx_ui"),
+                            br(), br(),
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                            radioButtons('test_method_TG218_mortality',
-                                         'Select hypothesis testing method for mortality',
-                                         choices = c("Cochran-Armitage test" = 'CA',
-                                           "Fisher's exact test with BH correction" = 'Fisher'),
-                                         selected = 'CA'),
-                            radioButtons('test_method_TG218_emergence',
-                                         'Select hypothesis testing method for emergence ratio',
-                                         choices = c("Cochran-Armitage test" = 'CA',
-                                           "Fisher's exact test with BH correction" = 'Fisher'),
-                                         selected = 'CA'),
-                            radioButtons('test_method_TG218_development',
-                                         'Select hypothesis testing method for development rate',
-                                         choices = c("Dunnett's test" = 'Dunnett',
-                                           "Steel's test" = 'Steel'),
-                                         selected = 'Dunnett'),
-                           h5("You can see the bartlett's test result for homogenity of variance of development rate, and then select testing method.")
-                            ), 
+                            uiOutput("tg218_select_hypothesis_mortality_ui"),
+                            uiOutput("tg218_select_hypothesis_emergence_ui"),
+                            uiOutput("tg218_select_hypothesis_development_ui"),
+                            uiOutput("tg218_bartlett_note_ui")
+                          ),
                           
                           ###### For Lemna (TG221)
                           conditionalPanel(
@@ -272,85 +233,50 @@ progress::-moz-progress-bar {
                           conditionalPanel(
                             condition = "input.test_type == 'TG235'",
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                            fileInput('datafile_TG235',
-                                      'Select an input file',
-                                      accept = c('.csv')),
-                            h5("You can download an example file: ", 
-                               a("here", href = "ChironomusTG235Data_sample.csv", TARGET = "_blank",style="text-decoration:underline;",
-                                 download = 'ChironomusTG235Data_sample.csv'),
-                               style = "font-size:23px;"),
                             br(),
+                            uiOutput("tg235_example_file_ui"),br(),
+                            uiOutput("tg235_input_file_ui"),
+                            br(), 
+                            uiOutput("tg235_select_model_ui"),
                             br(),
-                            radioButtons('model_TG235',
-                                         'Select fitting model',
-                                         choices = c('log-logistic 2 parameters' = 'll2',
-                                                     'log-logistic 3 parameters' = 'll3',
-                                                     'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll2'),
-                            br(),
-                            numericInput(inputId="ecx_TG235",label="Determine effect concentration X%",value=50,min=0,max=100),
-                            br(),
+                            uiOutput("tg235_determine_ecx_ui"),
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                            radioButtons('test_method_TG235',
-                                         'Select hypothesis testing method',
-                                         choices = c("Fisher's exact test with BH correction" = 'Fisher'),
-                                         selected = 'Fisher'),
-                       #    h5("You can see the bartlett's test result for homogenity of variance, and then select testing method.")
-                            ),
+                            br(),
+                            uiOutput("tg235_select_hypothesis_ui"),
+                          ),
 
                           ###### For fish embryo (TG236)
                           conditionalPanel(
                             condition = "input.test_type == 'TG236'",
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                            fileInput('datafile_TG236',
-                                      'Select an input file',
-                                      accept = c('.csv')),
-                            h5("You can download an example file: ", 
-                               a("here", href = "FishEmbryoTG236Data_sample.csv", TARGET = "_blank", style="text-decoration:underline;",
-                                 download = 'FishEmbryoTG236Data_sample.csv'),
-                               style = "font-size:23px;"),
                             br(),
+                            uiOutput("tg236_example_file_ui"),br(),
+                            uiOutput("tg236_input_file_ui"),
+                            br(), 
+                            uiOutput("tg236_select_model_ui"),
                             br(),
-                            radioButtons('model_TG236',
-                                         'Select fitting model',
-                                         choices = c('log-logistic 2 parameters' = 'll2',
-                                                     'log-logistic 3 parameters' = 'll3',
-                                                     'log-logistic 4 parameters' = 'll4'),
-                                         selected = 'll2'),
+                            uiOutput("tg236_determine_ecx_ui"),
+                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
                             br(),
-                            numericInput(inputId="ecx_TG236",label="Determine effect concentration X%",value=50,min=0,max=100),
-                            br(),
-                            tags$style(HTML('#bgdose_help1 {margin-top: 26px}'))
-                            ),
+                            uiOutput("tg236_select_hypothesis_ui"),
+                            uiOutput("tg236_no_need_ui")
+                          ),
 
                           ###### For fish cell line (TG249)
                           conditionalPanel(
                             condition = "input.test_type == 'TG249'",
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                            fileInput('datafile_TG249',
-                                      'Select an input file',
-                                      accept = c('.csv')),
-                            h5("You can download an example file: ", 
-                               a("here", href = "FishCellTG249Data_sample.csv", TARGET = "_blank",style="text-decoration:underline;",
-                                 download = 'FishCellTG249Data_sample.csv'),
-                               style = "font-size:23px;"),
                             br(),
+                            uiOutput("tg249_example_file_ui"),br(),
+                            uiOutput("tg249_input_file_ui"),
+                            br(), 
+                            uiOutput("tg249_select_model_ui"),
                             br(),
-                            radioButtons('model_TG249',
-                                         'Select fitting model',
-                                         choices = c('log-logistic 2 parameters' = 'll2'),
-                                         selected = 'll2'),
-                            br(),
-                            numericInput(inputId="ecx_TG249",label="Determine effect concentration X%",value=50,min=0,max=100),
-                            br(),
+                            uiOutput("tg249_determine_ecx_ui"),
                             tags$style(HTML('#bgdose_help1 {margin-top: 26px}')),
-                            radioButtons('test_method_TG249',
-                                         'Select hypothesis testing method',
-                                         choices = c("Dunnett's test" = 'Dunnett'),
-                                         selected = 'Dunnett'),
-                       #    h5("You can see the bartlett's test result for homogenity of variance, and then select testing method.")
-                            ),
-
+                            br(),
+                            uiOutput("tg249_select_hypothesis_ui"),
+                          ),
                           
                           fixedRow(
                             column(12, align="center",
@@ -378,9 +304,9 @@ progress::-moz-progress-bar {
              tabPanel(HTML("<font face=verdana size=5 color=#009E73>Download report </font>"),
                       fixedRow(
                         column(8, 
-                               br(), HTML("<font face=verdana size=5 color=#009E73><b>Download the analysis report</b></font>"),
-                               br(), br(), br(),
-                               radioButtons("format","Select report format", c('Word'), inline = TRUE),
+                               br(), uiOutput("download_title"),
+                               br(), br(), 
+                               uiOutput("report_format_ui"),
                                downloadButton("DownloadReport", "Download report", icon = icon("fas fa-download"),
                                               style = 'background-color:#e6e6e6; color:#000000; border-color:#9d9d9d;'),
                                br(),

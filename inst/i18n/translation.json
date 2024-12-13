@@ -1,0 +1,26 @@
+{
+  "languages": ["en", "ja"],
+  "translation": [
+      {"en": "Upload and analyze ecotoxicity data", "ja": "生態毒性データのアップロードと解析"},
+      {"en": "Chemical name", "ja": "化学物質名"},
+      {"en": "Select an input file", "ja": "入力ファイルを選択"},
+      {"en": "Select test type", "ja": "試験種別を選択"},
+      {"en": "Input the name of test chemical", "ja": "試験物質名を入力"},
+      {"en": "Select fitting model", "ja": "フィッティングモデルを選択"},
+      {"en": "Select fitting model for mortality", "ja": "死亡率に対するモデルを選択"},
+      {"en": "Select fitting model for emergence", "ja": "羽化率に対するモデルを選択"},
+      {"en": "Select fitting model for development rate", "ja": "変態速度に対するモデルを選択"},
+      {"en": "Determine effect concentration X%", "ja": "効果濃度X%を求める"},
+      {"en": "Select hypothesis testing method", "ja": "仮説検定法を選択"},
+      {"en": "Select hypothesis testing method for mortality", "ja": "死亡率に対する仮説検定法を選択"},
+      {"en": "Select hypothesis testing method for emergence", "ja": "羽化率に対する仮説検定法を選択"},
+      {"en": "Select hypothesis testing method for development rate", "ja": "変態速度に対する仮説検定法を選択"},
+      {"en": "You can download a template file: ", "ja": "テンプレートファイルをダウンロード"},
+      {"en": "Concentration unit", "ja": "濃度単位"},
+      {"en": "Only csv files are allowed.", "ja": "アップロード可能なファイルは csv のみです。"},
+      {"en": "You can see the bartlett's test result for homogenity of variance, and then select testing method.", "ja": "Bartlett検定結果を確認し、分散が等質でない場合はSteel検定を検討してください。"},
+      {"en": "No need to perform a hypothesis testing.", "ja": "仮説検定は不要"},
+      {"en": "Download the analysis report", "ja": "解析レポートのダウンロード"},
+      {"en": "Select report format", "ja":"レポート形式の選択"}
+    ]
+}

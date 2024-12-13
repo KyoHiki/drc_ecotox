@@ -1,5 +1,5 @@
-# drc-ecotox
-"drc-ecotox" is a freely available tool for dose-response analysis of standradized ecotoxicity tests. "drc-ecotox" is based on R and the "drc" and "shiny" R packages.
+# ShinyEcotox
+"ShinyEcotox" is a freely available tool for dose-response analysis of standradized ecotoxicity tests. "ShinyEcotox" is based on R and the "drc", "multcomp", and "shiny" R packages.
   
 
     
@@ -17,6 +17,7 @@ install.packages("rmarkdown")
 install.packages("here")
 install.packages("shinyjs")
 install.packages("shinycssloaders")
+install.packages("shiny.i18n")
 install.packages("DT")
 install.packages("mvtnorm")
 

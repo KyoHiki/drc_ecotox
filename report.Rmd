@@ -16,6 +16,11 @@ if(input$test_type == 'TG201'){
   print("Test No. 218: Sediment-Water Chironomid Toxicity Using Spiked Sediment or Test No. 219: Sediment-Water Chironomid Toxicity Using Spiked Water")
 }else if(input$test_type == 'TG221') {
   print("Test No. 221: Lemna sp. Growth Inhibition Test")
+  if(input$endpoint_TG221 =='Number'){
+    print("Endpoint: Frond number")
+  } else if(input$endpoint_TG221 =='Area') {
+    print("Endpoint: Total frond area")
+  }
 } else if(input$test_type == 'TG235') {
   print("Test No. 235: Chironomus sp., Acute Immobilisation Test")
 }  else if(input$test_type == 'TG236') {
@@ -188,6 +193,7 @@ knitr::kable( round(ECx(),2) )
 ## 3. Dose-response plot
 ```{r plot, collapse=TRUE, echo=FALSE ,fig.width=6.3, fig.height=5}
  if(input$test_type == 'TG201') {
+      print("Growth rate for 72 hours")
       par(mar=c(5,10,2,2),mgp=c(3.5, 1, 0),oma=c(0.5,0.5,0.5,0.5))
       plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Growth rate (/d)",
              cex=2,cex.axis =2, cex.lab=2)
@@ -234,10 +240,12 @@ knitr::kable( round(ECx(),2) )
            ylim=c(0,1),lty="dotted",cex=2,cex.axis =1.2, cex.lab=1.2)
       plot(fit3, log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Development rate",
            lty="dotted",cex=2,cex.axis =1.2, cex.lab=1.2)
+      
     } else if(input$test_type == 'TG221') {
       par(mar=c(5,10,2,2),mgp=c(3.5, 1, 0),oma=c(0.5,0.5,0.5,0.5))
       plot(fitmodel(), log="x", broken=TRUE, xlab=paste0("Concentration (", input$conc_unit, ")"), ylab="Growth rate (/d)",
              cex=2,cex.axis =2, cex.lab=2)
+      
     } else if(input$test_type == 'TG235') {
       fit <- fitmodel()
       fit1 <- fit$fit1
